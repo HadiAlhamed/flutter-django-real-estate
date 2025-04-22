@@ -7,11 +7,13 @@ class MyInputField extends StatelessWidget {
   final String hint;
   final IconData? prefixIcon;
   final bool? isObsecure;
+  final Widget? suffixWidget;
   const MyInputField({
     super.key,
     required this.hint,
     this.prefixIcon,
     this.isObsecure,
+    this.suffixWidget,
   });
 
   @override
@@ -21,6 +23,7 @@ class MyInputField extends StatelessWidget {
       child: TextFormField(
         obscureText: isObsecure ?? false,
         decoration: InputDecoration(
+          suffixIcon: suffixWidget,
           hintText: hint,
           prefixIcon: Icon(
             prefixIcon,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:real_estate/controllers/login_controller.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
@@ -8,6 +10,7 @@ import 'package:real_estate/widgets/my_row_button.dart';
 class Login extends StatelessWidget {
   Login({super.key});
   final GlobalKey<FormState> formState = GlobalKey<FormState>();
+  final LoginController loginController = Get.find<LoginController>();
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.sizeOf(context).width;
@@ -39,12 +42,43 @@ class Login extends StatelessWidget {
                         hint: 'Email',
                         prefixIcon: Icons.email,
                       ),
-                      MyInputField(
-                        hint: 'Password',
-                        prefixIcon: Icons.password,
-                        isObsecure: true,
+                      GetBuilder<LoginController>(
+                        id: 'password',
+                        init: loginController,
+                        builder: (controller) {
+                          return MyInputField(
+                            hint: 'Password',
+                            prefixIcon: Icons.password,
+                            isObsecure: loginController.hidePassword,
+                            suffixWidget: IconButton(
+                              onPressed: () {
+                                loginController.flipHidePassword();
+                              },
+                              icon: Icon(
+                                loginController.hidePassword
+                                    ? Icons.remove_red_eye_outlined
+                                    : Icons.remove_red_eye,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      MyButton(title: 'Sign In'),
+                      GetBuilder(
+                        id: 'loading',
+                        init: loginController,
+                        builder: (controller) {
+                          return MyButton(
+                            title: loginController.isLoading ? null : 'Sign In',
+                            onPressed: () async {
+                              loginController.changeIsLoading(true);
+                              await Future.delayed(
+                                Duration(seconds: 3),
+                              );
+                              loginController.changeIsLoading(false);
+                            },
+                          );
+                        },
+                      ),
                       Container(
                         margin: const EdgeInsets.only(bottom: 20),
                         child: InkWell(
@@ -55,21 +89,37 @@ class Login extends StatelessWidget {
                           ),
                         ),
                       ),
-                      MyRowButton(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Sign in with ",
-                              style: buttonTextStyleWhite,
-                            ),
-                            SizedBox(
-                              height: 30,
-                              child: Image.asset(
-                                  'assets/images/logos/google_logo.png'),
-                            ),
-                          ],
-                        ),
+                      GetBuilder<LoginController>(
+                        id: 'loadingGoogle',
+                        init: loginController,
+                        builder: (controller) {
+                          return MyRowButton(
+                            onPressed: () async {
+                              loginController.changeIsLoadingGoogle(true);
+                              await Future.delayed(
+                                Duration(seconds: 3),
+                              );
+                              loginController.changeIsLoadingGoogle(false);
+                            },
+                            child: loginController.isLoading
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white)
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        "Sign in with ",
+                                        style: buttonTextStyleWhite,
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                        child: Image.asset(
+                                            'assets/images/logos/google_logo.png'),
+                                      ),
+                                    ],
+                                  ),
+                          );
+                        },
                       ),
                       Container(
                         margin: const EdgeInsets.only(bottom: 20),
@@ -81,7 +131,9 @@ class Login extends StatelessWidget {
                               style: h4TitleStyleGrey,
                             ),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                Get.offNamed('/signup');
+                              },
                               child: const Text(
                                 "register now",
                                 style: h3TitleStylePrimary,

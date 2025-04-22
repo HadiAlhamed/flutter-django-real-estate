@@ -1,10 +1,17 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
+
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 
 class MyButton extends StatelessWidget {
-  final String title;
-  const MyButton({super.key, required this.title});
+  final String? title;
+  final void Function()? onPressed;
+  const MyButton({
+    super.key,
+    required this.title,
+    this.onPressed,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +32,13 @@ class MyButton extends StatelessWidget {
           ),
           backgroundColor: WidgetStateProperty.all(primaryColor),
         ),
-        onPressed: () {},
-        child: Text(
-          title,
-          style: buttonTextStyleWhite,
-        ),
+        onPressed: onPressed,
+        child: title == null
+            ? const CircularProgressIndicator(color: Colors.white)
+            : Text(
+                title!,
+                style: buttonTextStyleWhite,
+              ),
       ),
     );
   }

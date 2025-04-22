@@ -5,9 +5,11 @@ import 'package:real_estate/textstyles/text_colors.dart';
 
 class MyRowButton extends StatelessWidget {
   final Widget child;
+  final void Function()? onPressed;
   const MyRowButton({
     super.key,
     required this.child,
+    this.onPressed,
   });
 
   @override
@@ -29,7 +31,7 @@ class MyRowButton extends StatelessWidget {
           ),
           backgroundColor: WidgetStateProperty.all(primaryColor),
         ),
-        onPressed: () {},
+        onPressed: onPressed,
         child: child,
       ),
     );

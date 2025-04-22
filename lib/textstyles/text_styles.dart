@@ -1,0 +1,33 @@
+import 'package:flutter/material.dart';
+import 'package:real_estate/textstyles/text_colors.dart';
+
+const TextStyle h1TitleStyleBlack = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 25,
+  fontWeight: FontWeight.w900,
+);
+const TextStyle h2TitleStylePrimary = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 20,
+  fontWeight: FontWeight.w700,
+  color: primaryColor,
+);
+const TextStyle h3TitleStylePrimary = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 17,
+  fontWeight: FontWeight.w700,
+  color: primaryColor,
+);
+const TextStyle h4TitleStyleGrey = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 15,
+  fontWeight: FontWeight.w700,
+  color: greyText,
+);
+
+const TextStyle buttonTextStyleWhite = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 22,
+  fontWeight: FontWeight.w700,
+  color: whiteText,
+);

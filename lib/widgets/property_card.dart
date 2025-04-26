@@ -7,51 +7,54 @@ class PropertyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      elevation: 10,
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 100,
-            width: double.infinity,
-            child: Image.asset(
-              "assets/images/house.jpg",
-              fit: BoxFit.cover,
+    return InkWell(
+      onTap: () {},
+      child: Card(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 10,
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 100,
+              width: double.infinity,
+              child: Image.asset(
+                "assets/images/house.jpg",
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "16K SP",
-                  style: h4TitleStyleBlack,
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Flat located in Lattakia Near Tishreen University",
-                  style: h4TitleStyleGrey.copyWith(fontSize: 10),
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    infoIconText(Icons.aspect_ratio_outlined, "200 Sq m"),
-                    infoIconText(Icons.bed_outlined, "2"),
-                    infoIconText(Icons.bathtub_outlined, "1"),
-                  ],
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "16K SP",
+                    style: h4TitleStyleBlack,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    "Flat located in Lattakia Near Tishreen University",
+                    style: h4TitleStyleGrey.copyWith(fontSize: 10),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      infoIconText(Icons.aspect_ratio_outlined, "200 Sq m"),
+                      infoIconText(Icons.bed_outlined, "2"),
+                      infoIconText(Icons.bathtub_outlined, "1"),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

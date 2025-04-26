@@ -63,6 +63,7 @@ flutter:
         - assets/images/Aqari_logo_primary_towers.png
         - assets/images/Aqari_logo_primary_house.png
         - assets/images/logos/google_logo.png
+        - assets/images/house.jpg
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/to/resolution-aware-images

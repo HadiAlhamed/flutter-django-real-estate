@@ -4,6 +4,7 @@ import 'package:real_estate/bindings/my_bindings.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/views/auth/login.dart';
 import 'package:real_estate/views/auth/signup.dart';
+import 'package:real_estate/views/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,12 +18,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Real Estate',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 238, 235, 235),
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/login',
+      initialRoute: '/home',
       initialBinding: MyBindings(),
       getPages: [
         GetPage(
@@ -34,6 +36,12 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/signup',
           page: () => Signup(),
+          transition: Transition.fade,
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+        GetPage(
+          name: '/home',
+          page: () => HomePage(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),

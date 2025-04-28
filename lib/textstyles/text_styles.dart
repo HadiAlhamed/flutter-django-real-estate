@@ -54,3 +54,9 @@ const TextStyle buttonTextStyleWhite = TextStyle(
   fontWeight: FontWeight.w700,
   color: whiteText,
 );
+const TextStyle buttonTextStylePrimary = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 22,
+  fontWeight: FontWeight.w700,
+  color: primaryColor,
+);

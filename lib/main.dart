@@ -5,6 +5,8 @@ import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/views/auth/login.dart';
 import 'package:real_estate/views/auth/signup.dart';
 import 'package:real_estate/views/home_page.dart';
+import 'package:real_estate/views/maps/open_street_map_with_gps.dart';
+import 'package:real_estate/views/property_details_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/home',
+      initialRoute: '/propertyDetails',
       initialBinding: MyBindings(),
       getPages: [
         GetPage(
@@ -42,6 +44,18 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/home',
           page: () => HomePage(),
+          transition: Transition.fade,
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+        GetPage(
+          name: '/propertyDetails',
+          page: () => PropertyDetailsPage(),
+          transition: Transition.fade,
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+        GetPage(
+          name: '/openStreetMap',
+          page: () => OpenStreetMapWithGPS(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),

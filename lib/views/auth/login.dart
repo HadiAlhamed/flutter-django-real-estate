@@ -10,6 +10,8 @@ class Login extends StatelessWidget {
   Login({super.key});
   final GlobalKey<FormState> formState = GlobalKey<FormState>();
   final LoginController loginController = Get.find<LoginController>();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.sizeOf(context).width;
@@ -38,6 +40,7 @@ class Login extends StatelessWidget {
                   child: Column(
                     children: [
                       MyInputField(
+                        controller: emailController,
                         hint: 'Email',
                         prefixIcon: Icons.email,
                       ),
@@ -46,6 +49,7 @@ class Login extends StatelessWidget {
                         init: loginController,
                         builder: (controller) {
                           return MyInputField(
+                            controller: passwordController,
                             hint: 'Password',
                             prefixIcon: Icons.password,
                             isObsecure: loginController.hidePassword,

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
+import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
 import 'package:real_estate/widgets/property_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,7 +16,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final List<String> tabs = ['All', 'House', 'Flats', 'Villas'];
-  int selectedIndex = 0;
+  final BottomNavigationBarController bottomController =
+      Get.find<BottomNavigationBarController>();
   late TabController _tabController;
   @override
   void initState() {
@@ -93,50 +97,15 @@ class _HomePageState extends State<HomePage>
           ],
         ),
       ),
-      bottomNavigationBar: myBottomNavigationBar(),
-    );
-  }
-
-  BottomNavigationBar myBottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: selectedIndex,
-      selectedItemColor: primaryColor,
-      selectedLabelStyle: h4TitleStylePrimary,
-      unselectedItemColor: greyText,
-      unselectedLabelStyle: h4TitleStyleGrey,
-      showUnselectedLabels: true,
-      type: BottomNavigationBarType.fixed,
-      onTap: (index) {
-        setState(() {
-          selectedIndex = index;
-        });
-      },
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
-          ),
-          label: "Home",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.message_outlined,
-          ),
-          label: "Messages",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.favorite_border_outlined,
-          ),
-          label: "Favorites",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(
-            Icons.person,
-          ),
-          label: "Account",
-        ),
-      ],
+      bottomNavigationBar: GetBuilder<BottomNavigationBarController>(
+        init: bottomController,
+        builder: (controller) {
+          return MyBottomNavigationBar(
+            selectedIndex: bottomController.selectedIndex,
+            bottomController: bottomController,
+          );
+        },
+      ),
     );
   }
 

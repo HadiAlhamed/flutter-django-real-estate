@@ -97,7 +97,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
                 const SizedBox(height: 20),
                 getLocationTitle(),
                 getFlutterMap(),
-                // const SizedBox(height: 5), // Extra space to avoid overlap
+                const SizedBox(height: 5), // Extra space to avoid overlap
               ],
             ),
           ),

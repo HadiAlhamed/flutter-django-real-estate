@@ -6,6 +6,7 @@ import 'package:real_estate/views/auth/login.dart';
 import 'package:real_estate/views/auth/signup.dart';
 import 'package:real_estate/views/home_page.dart';
 import 'package:real_estate/views/maps/open_street_map_with_gps.dart';
+import 'package:real_estate/views/profile_page.dart';
 import 'package:real_estate/views/property_details_page.dart';
 
 void main() {
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/propertyDetails',
+      initialRoute: '/profilePage',
       initialBinding: MyBindings(),
       getPages: [
         GetPage(
@@ -50,6 +51,12 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/propertyDetails',
           page: () => PropertyDetailsPage(),
+          transition: Transition.fade,
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+        GetPage(
+          name: '/profilePage',
+          page: () => ProfilePage(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),

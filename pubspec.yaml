@@ -41,6 +41,7 @@ dependencies:
     geolocator: ^14.0.0
     intl: ^0.20.2
     country_picker: ^2.0.27
+    pin_code_fields: ^8.0.1
 
 dev_dependencies:
     flutter_test:
@@ -69,6 +70,8 @@ flutter:
         - assets/images/Aqari_logo_primary_house.png
         - assets/images/logos/google_logo.png
         - assets/images/house.jpg
+        - assets/gifs/Forgot_password_1_transparent.gif
+        - assets/gifs/Forgot_password_transparent.gif
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/to/resolution-aware-images
@@ -86,7 +89,7 @@ flutter:
           fonts:
               - asset: assets/fonts/Inter-Italic-VariableFont_opsz,wght.ttf
               - asset: assets/fonts/Inter-VariableFont_opsz,wght.ttf
-            
+
     #
     # For details regarding fonts from package dependencies,
     # see https://flutter.dev/to/font-from-package

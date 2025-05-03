@@ -21,6 +21,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    emailController.text = 'example@gmail.com';
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 235, 235),
       appBar: AppBar(
@@ -60,7 +61,8 @@ class ProfilePage extends StatelessWidget {
                 controller: firstNameController,
               ),
               myProfileInput(hint: 'Last Name', controller: lastNameController),
-              myProfileInput(hint: 'Email', controller: emailController),
+              myProfileInput(
+                  hint: 'Email', controller: emailController, readOnly: true),
               myProfileInput(
                 readOnly: true,
                 controller: birthDateController,

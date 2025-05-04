@@ -3,7 +3,8 @@ import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 
 class PropertyCard extends StatelessWidget {
-  const PropertyCard({super.key});
+  final bool? favorite;
+  const PropertyCard({super.key, this.favorite});
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +49,8 @@ class PropertyCard extends StatelessWidget {
                       infoIconText(Icons.aspect_ratio_outlined, "200 Sq m"),
                       infoIconText(Icons.bed_outlined, "2"),
                       infoIconText(Icons.bathtub_outlined, "1"),
+                      if (favorite ?? false)
+                        Icon(Icons.favorite, color: primaryColor),
                     ],
                   ),
                 ],

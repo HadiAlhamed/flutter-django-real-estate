@@ -6,6 +6,7 @@ import 'package:real_estate/views/account_page.dart';
 import 'package:real_estate/views/auth/forget_password_page.dart';
 import 'package:real_estate/views/auth/login.dart';
 import 'package:real_estate/views/auth/signup.dart';
+import 'package:real_estate/views/favorites_page.dart';
 import 'package:real_estate/views/home_page.dart';
 import 'package:real_estate/views/maps/open_street_map_with_gps.dart';
 import 'package:real_estate/views/profile_page.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/home',
+      initialRoute: '/favoritesPage',
       initialBinding: MyBindings(),
       getPages: [
         GetPage(
@@ -71,6 +72,12 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/accountPage',
           page: () => AccountPage(),
+          transition: Transition.fade,
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+        GetPage(
+          name: '/favoritesPage',
+          page: () => FavoritesPage(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),

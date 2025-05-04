@@ -31,6 +31,9 @@ class MyBottomNavigationBar extends StatelessWidget {
           //go home
           Get.offNamed('/home');
         }
+        if (index == 2) {
+          Get.offNamed('/favoritesPage');
+        }
         if (index == 3) {
           //go accountpage
           Get.offNamed('/accountPage');

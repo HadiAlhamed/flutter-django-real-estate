@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/bindings/my_bindings.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
-import 'package:real_estate/views/forget_password_page.dart';
+import 'package:real_estate/views/account_page.dart';
+import 'package:real_estate/views/auth/forget_password_page.dart';
 import 'package:real_estate/views/auth/login.dart';
 import 'package:real_estate/views/auth/signup.dart';
 import 'package:real_estate/views/home_page.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: '/forgetPassword',
+      initialRoute: '/home',
       initialBinding: MyBindings(),
       getPages: [
         GetPage(
@@ -64,6 +65,12 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/forgetPassword',
           page: () => ForgetPasswordPage(),
+          transition: Transition.fade,
+          transitionDuration: const Duration(milliseconds: 300),
+        ),
+        GetPage(
+          name: '/accountPage',
+          page: () => AccountPage(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),

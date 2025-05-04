@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/drop_down_controller.dart';
 import 'package:real_estate/controllers/home_page_tab_controller.dart';
@@ -16,5 +17,6 @@ class MyBindings extends Bindings {
     Get.put(HomePageTabController());
     Get.put(DropDownController());
     Get.put(ForgetPasswordController());
+    Get.put(AccountPageController());
   }
 }

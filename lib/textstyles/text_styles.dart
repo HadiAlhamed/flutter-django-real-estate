@@ -12,6 +12,12 @@ const TextStyle h2TitleStylePrimary = TextStyle(
   fontWeight: FontWeight.w700,
   color: primaryColor,
 );
+const TextStyle h2TitleStyleWhite = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 20,
+  fontWeight: FontWeight.w700,
+  color: secondryColor,
+);
 const TextStyle h2TitleStyleBlack = TextStyle(
   fontFamily: "Inter",
   fontSize: 20,
@@ -47,6 +53,12 @@ const TextStyle h4TitleStyleBlack = TextStyle(
   fontSize: 15,
   fontWeight: FontWeight.w700,
   color: Colors.black,
+);
+const TextStyle h4TitleStyleRed = TextStyle(
+  fontFamily: "Inter",
+  fontSize: 15,
+  fontWeight: FontWeight.w700,
+  color: Colors.red,
 );
 const TextStyle buttonTextStyleWhite = TextStyle(
   fontFamily: "Inter",

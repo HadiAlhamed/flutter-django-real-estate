@@ -25,7 +25,16 @@ class MyBottomNavigationBar extends StatelessWidget {
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       onTap: (index) {
+        print("index : $index");
         bottomController.changeSelectedIndex(index: index);
+        if (index == 0) {
+          //go home
+          Get.offNamed('/home');
+        }
+        if (index == 3) {
+          //go accountpage
+          Get.offNamed('/accountPage');
+        }
       },
       items: [
         BottomNavigationBarItem(

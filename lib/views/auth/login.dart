@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/login_controller.dart';
+import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
 import 'package:real_estate/widgets/my_input_field.dart';
 import 'package:real_estate/widgets/my_row_button.dart';
+import 'package:real_estate/widgets/my_snackbar.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});
@@ -72,13 +74,7 @@ class Login extends StatelessWidget {
                         builder: (controller) {
                           return MyButton(
                             title: loginController.isLoading ? null : 'Sign In',
-                            onPressed: () async {
-                              loginController.changeIsLoading(true);
-                              await Future.delayed(
-                                Duration(seconds: 3),
-                              );
-                              loginController.changeIsLoading(false);
-                            },
+                            onPressed: handleLogin,
                           );
                         },
                       ),
@@ -100,7 +96,7 @@ class Login extends StatelessWidget {
                             onPressed: () async {
                               loginController.changeIsLoadingGoogle(true);
                               await Future.delayed(
-                                Duration(seconds: 3),
+                                const Duration(seconds: 3),
                               );
                               loginController.changeIsLoadingGoogle(false);
                             },
@@ -154,5 +150,28 @@ class Login extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void handleLogin() async {
+    if (formState.currentState!.validate()) {
+      loginController.changeIsLoading(true);
+      bool result = await AuthApis.login(
+        email: emailController.text.trim(),
+        password: passwordController.text,
+      );
+      if (result) {
+        Get.offNamed('/home');
+      } else {
+        Get.showSnackbar(
+          MySnackbar(
+            success: false,
+            title: "Login",
+            message: 'Failed to login , please try again later',
+          ),
+        );
+      }
+
+      loginController.changeIsLoading(false);
+    }
   }
 }

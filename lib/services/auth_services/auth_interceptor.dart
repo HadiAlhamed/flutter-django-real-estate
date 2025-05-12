@@ -1,0 +1,37 @@
+import 'package:dio/dio.dart';
+import 'package:real_estate/services/auth_apis/auth_apis.dart';
+import 'package:real_estate/services/auth_services/token_service.dart';
+
+class AuthInterceptor extends Interceptor {
+  final Dio dio;
+
+  AuthInterceptor(this.dio);
+
+  @override
+  void onRequest(
+      RequestOptions options, RequestInterceptorHandler handler) async {
+    final token = await TokenService.getAccessToken();
+    if (token != null) {
+      options.headers['Authorization'] = 'Bearer $token';
+    }
+    return handler.next(options);
+  }
+
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    if (err.response?.statusCode == 401) {
+      final success = await AuthApis.refreshToken();
+      if (success) {
+        final newToken = await TokenService.getAccessToken();
+
+        // Retry original request with new token
+        final retryRequest = err.requestOptions;
+        retryRequest.headers['Authorization'] = 'Bearer $newToken';
+
+        final response = await dio.fetch(retryRequest);
+        return handler.resolve(response);
+      }
+    }
+    return handler.next(err);
+  }
+}

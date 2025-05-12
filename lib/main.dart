@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/bindings/my_bindings.dart';
+import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/views/account_page.dart';
 import 'package:real_estate/views/auth/forget_password_page.dart';
@@ -13,7 +14,11 @@ import 'package:real_estate/views/maps/open_street_map_with_gps.dart';
 import 'package:real_estate/views/profile_page.dart';
 import 'package:real_estate/views/property_details_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Future.wait([
+    AuthApis.init(),
+  ]);
   runApp(const MyApp());
 }
 
@@ -42,7 +47,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/verifyCodePage',
-          page: () => VerifyCodePage(),
+          page: () => const VerifyCodePage(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),
@@ -54,13 +59,13 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/home',
-          page: () => HomePage(),
+          page: () => const HomePage(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),
         GetPage(
           name: '/propertyDetails',
-          page: () => PropertyDetailsPage(),
+          page: () => const PropertyDetailsPage(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),
@@ -90,7 +95,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/openStreetMap',
-          page: () => OpenStreetMapWithGPS(),
+          page: () => const OpenStreetMapWithGPS(),
           transition: Transition.fade,
           transitionDuration: const Duration(milliseconds: 300),
         ),

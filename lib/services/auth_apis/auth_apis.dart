@@ -1,18 +1,23 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
 import 'package:real_estate/services/api.dart';
+import 'package:real_estate/services/auth_services/auth_interceptor.dart';
+import 'package:real_estate/services/auth_services/token_service.dart';
 
 class AuthApis {
+  static final Dio _dio = Dio();
+  static Future<void> init() async {
+    _dio.interceptors.add(AuthInterceptor(_dio));
+  }
+
   static Future<bool> signup({
     required String email,
     required String password,
   }) async {
     print("Email : $email \nPassword : $password");
     try {
-      http.Response response = await http.post(
-        Uri.parse("${Api.baseUrl}/users/signup/"),
-        body: {
+      final response = await _dio.post(
+        "${Api.baseUrl}/users/signup/",
+        data: {
           'email': email,
           'password': password,
         },
@@ -22,7 +27,7 @@ class AuthApis {
         print("sign up succeed , check your email");
         return true;
       } else {
-        print("sign up failed invaild input data or missing required fields");
+        print("sign up failed invalid input data or missing required fields");
         return false;
       }
     } catch (e) {
@@ -33,19 +38,16 @@ class AuthApis {
 
   static Future<int> checkActivationStatus({required String email}) async {
     try {
-      http.Response response = await http.post(
-        Uri.parse("${Api.baseUrl}/users/check-activation-status/"),
-        body: {
+      final response = await _dio.post(
+        "${Api.baseUrl}/users/check-activation-status/",
+        data: {
           'email': email,
         },
       );
-      //-1 error
-      //0 new email
-      //1 exists not verified
-      //2 verified
+
       if (response.statusCode == 200) {
         int ret = 0;
-        Map<String, dynamic> responseBody = jsonDecode(response.body);
+        final responseBody = response.data;
         if (responseBody['exists']) {
           ret = 1;
         }
@@ -69,15 +71,17 @@ class AuthApis {
   }) async {
     print("Email : $email \nCode : $code");
     try {
-      http.Response response = await http.post(
-        Uri.parse("${Api.baseUrl}/users/verify-code/"),
-        body: {
+      final response = await _dio.post(
+        "${Api.baseUrl}/users/verify-code/",
+        data: {
           'email': email,
           'code': code,
           'purpose': purpose,
         },
       );
-      print(jsonDecode(response.body));
+
+      print(response.data);
+
       if (response.statusCode == 200) {
         print(
             "Verification successful, the user is either activated or can now reset their password");
@@ -86,7 +90,7 @@ class AuthApis {
         print(
             "Invalid code, code expired, or blocked due to too many attempts");
       } else if (response.statusCode == 404) {
-        print("User not found or no verification code available for the use");
+        print("User not found or no verification code available for the user");
       }
 
       return false;
@@ -101,9 +105,9 @@ class AuthApis {
   }) async {
     print("Email : $email");
     try {
-      http.Response response = await http.post(
-        Uri.parse("${Api.baseUrl}/users/forgot-password/"),
-        body: {
+      final response = await _dio.post(
+        "${Api.baseUrl}/users/forgot-password/",
+        data: {
           'email': email,
         },
       );
@@ -121,12 +125,67 @@ class AuthApis {
     }
   }
 
-  static Future<void> login({
+  static Future<bool> login({
     required String email,
     required String password,
   }) async {
-    
+    // TODO: Add login implementation using Dio
+    print("Trying to login");
+    print("Email : $email \nPassword : $password");
+    try {
+      final response = await _dio.post(
+        "${Api.baseUrl}/users/login/",
+        data: {
+          'email': email,
+          'password': password,
+        },
+      );
+      if (response.statusCode == 200) {
+        final data = response.data;
+        await TokenService.saveTokens(
+          accessToken: data['access'],
+          refreshToken: data['refresh'],
+        );
+        print("Login succeed");
+        return true;
+      } else {
+        print("Login unauthorized");
+        return false;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+      return false;
+    }
   }
 
-  static Future<void> logout() async {}
+  static Future<bool> refreshToken() async {
+    final refreshToken = await TokenService.getRefreshToken();
+
+    try {
+      final response = await _dio.post(
+        '${Api.baseUrl}/auth/jwt/refresh/',
+        data: {'refresh': refreshToken},
+      );
+
+      if (response.statusCode == 201) {
+        print("tokens refreshed successfully");
+        final data = response.data;
+        await TokenService.saveTokens(
+          accessToken: data['access'],
+          refreshToken: data['refresh'],
+        );
+        return true;
+      } else {
+        print("tokens failed to refresh !!!");
+        return false;
+      }
+    } catch (e) {
+      await TokenService.clearTokens();
+      return false;
+    }
+  }
+
+  static Future<void> logout() async {
+    // TODO: Add logout implementation if needed
+  }
 }

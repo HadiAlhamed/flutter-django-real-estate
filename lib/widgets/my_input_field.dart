@@ -16,6 +16,7 @@ class MyInputField extends StatelessWidget {
   final bool? readOnly;
   final void Function()? ontap;
   final TextInputType? keyboardType;
+  final String? Function(String?)? validator;
   const MyInputField({
     super.key,
     required this.hint,
@@ -27,7 +28,9 @@ class MyInputField extends StatelessWidget {
     this.controller,
     this.readOnly,
     this.ontap,
-    this.prefixWidget, this.keyboardType,
+    this.prefixWidget,
+    this.keyboardType,
+    this.validator,
   });
 
   @override
@@ -37,6 +40,7 @@ class MyInputField extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 20),
       child: TextFormField(
         // onTapAlwaysCalled: true,
+        validator: validator,
         onTap: ontap,
         readOnly: readOnly ?? false,
         controller: controller,

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:real_estate/controllers/signup_controller.dart';
+import 'package:real_estate/services/api.dart';
+import 'package:real_estate/services/auth_apis/auth_apis.dart';
+import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
 import 'package:real_estate/widgets/my_input_field.dart';
 import 'package:real_estate/widgets/my_row_button.dart';
+import 'package:real_estate/widgets/my_snackbar.dart';
 
 class Signup extends StatelessWidget {
   Signup({super.key});
@@ -41,6 +46,12 @@ class Signup extends StatelessWidget {
                   child: Column(
                     children: [
                       MyInputField(
+                        validator: (value) {
+                          if (value == null || value == '') {
+                            return "please enter your email";
+                          }
+                          return null;
+                        },
                         controller: emailController,
                         hint: 'Email',
                         prefixIcon: Icons.email,
@@ -50,6 +61,12 @@ class Signup extends StatelessWidget {
                         init: signupController,
                         builder: (controller) {
                           return MyInputField(
+                            validator: (value) {
+                              if (value == null || value == '') {
+                                return "please enter your password";
+                              }
+                              return null;
+                            },
                             controller: passwordController,
                             hint: 'Password',
                             prefixIcon: Icons.password,
@@ -71,6 +88,15 @@ class Signup extends StatelessWidget {
                         init: signupController,
                         builder: (controller) {
                           return MyInputField(
+                            validator: (value) {
+                              if (value == null || value == '') {
+                                return "please confirm your password";
+                              }
+                              if (value != passwordController.text) {
+                                return "Passwords do not match.";
+                              }
+                              return null;
+                            },
                             controller: cPasswordController,
                             hint: 'Confirm Password',
                             prefixIcon: Icons.password,
@@ -92,18 +118,10 @@ class Signup extends StatelessWidget {
                         init: signupController,
                         builder: (controller) {
                           return MyButton(
-                              onPressed: () async {
-                                signupController.changeIsLoading(true);
-                                await Future.delayed(
-                                  const Duration(
-                                    seconds: 3,
-                                  ),
-                                );
-                                signupController.changeIsLoading(false);
-                              },
-                              title: signupController.isLoading
-                                  ? null
-                                  : 'Sign Up');
+                            onPressed: handleSignUp,
+                            title:
+                                signupController.isLoading ? null : 'Sign Up',
+                          );
                         },
                       ),
                       GetBuilder<SignupController>(
@@ -170,5 +188,60 @@ class Signup extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void handleSignUp() async {
+    if (formState.currentState!.validate()) {
+      signupController.changeIsLoading(true);
+      final int activationResult = await AuthApis.checkActivationStatus(
+        email: emailController.text.trim(),
+      );
+      print(activationResult);
+      if (activationResult == -1) {
+        Get.showSnackbar(
+          MySnackbar(
+            success: false,
+            title: "Signing up",
+            message: 'An error has occurred please try again later',
+          ),
+        );
+      } else if (activationResult <= 1) {
+        //new email
+        final bool result = activationResult == 1
+            ? true
+            : await AuthApis.signup(
+                email: emailController.text.trim(),
+                password: passwordController.text,
+              );
+        if (result) {
+          await Future.wait([
+            Api.box.write('email', emailController.text.trim()),
+            Api.box.write('password', passwordController.text)
+          ]);
+          
+          //go to code page
+          Get.toNamed('/verifyCodePage');
+        } else {
+          //show error message
+          Get.showSnackbar(
+            MySnackbar(
+              success: false,
+              title: "Signing up",
+              message: 'An error has occurred please try again later',
+            ),
+          );
+        }
+      } else {
+        //activationResult = 2
+        Get.showSnackbar(
+          MySnackbar(
+            success: false,
+            title: "Signing up",
+            message: 'Email already exits.',
+          ),
+        );
+      }
+      signupController.changeIsLoading(false);
+    }
   }
 }

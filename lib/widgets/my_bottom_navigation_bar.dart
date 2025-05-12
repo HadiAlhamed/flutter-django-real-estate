@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -8,7 +9,9 @@ import 'package:real_estate/textstyles/text_styles.dart';
 class MyBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
   final BottomNavigationBarController bottomController;
-  const MyBottomNavigationBar({
+  final AccountPageController accountController =
+      Get.find<AccountPageController>();
+  MyBottomNavigationBar({
     super.key,
     required this.selectedIndex,
     required this.bottomController,
@@ -40,25 +43,25 @@ class MyBottomNavigationBar extends StatelessWidget {
         }
       },
       items: [
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             Icons.home,
           ),
           label: "Home",
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             Icons.message_outlined,
           ),
           label: "Messages",
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             Icons.favorite_border_outlined,
           ),
           label: "Favorites",
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(
             Icons.person,
           ),

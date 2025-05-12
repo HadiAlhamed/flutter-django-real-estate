@@ -4,9 +4,11 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
+import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
+import 'package:real_estate/widgets/my_snackbar.dart';
 
 class AccountPage extends StatelessWidget {
   AccountPage({super.key});
@@ -90,17 +92,17 @@ class AccountPage extends StatelessWidget {
   Container accountHeader(double screenHeight) {
     return Container(
       clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: primaryColor,
       ),
       height: 0.2 * screenHeight,
-      child: ListTile(
-        contentPadding: const EdgeInsets.only(top: 60, left: 10, right: 8),
+      child: const ListTile(
+        contentPadding: EdgeInsets.only(top: 60, left: 10, right: 8),
         leading: CircleAvatar(
           radius: 25,
           backgroundImage: AssetImage('assets/images/person.jpg'),
         ),
-        title: const Text("Joe Biden", style: h2TitleStyleWhite),
+        title: Text("Joe Biden", style: h2TitleStyleWhite),
         trailing: Icon(Icons.notifications, size: 30, color: Colors.white),
       ),
     );
@@ -113,7 +115,7 @@ class AccountPage extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.calendar_month),
           title: const Text("My Booking", style: h4TitleStyleBlack),
-          trailing: Icon(Icons.keyboard_arrow_right, size: 32),
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
           onTap: () {},
         ),
         const SizedBox(height: 10),
@@ -121,7 +123,7 @@ class AccountPage extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.person_2_outlined),
           title: const Text("Profile", style: h4TitleStyleBlack),
-          trailing: Icon(Icons.keyboard_arrow_right, size: 32),
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
           onTap: () {},
         ),
         const SizedBox(height: 10),
@@ -129,7 +131,7 @@ class AccountPage extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.notifications),
           title: const Text("Notifications", style: h4TitleStyleBlack),
-          trailing: Icon(Icons.keyboard_arrow_right, size: 32),
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
           onTap: () {},
         ),
         const SizedBox(height: 10),
@@ -139,11 +141,25 @@ class AccountPage extends StatelessWidget {
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.logout_outlined, color: Colors.red),
           title: const Text("Logout", style: h4TitleStyleRed),
-          trailing: Icon(Icons.keyboard_arrow_right, size: 32),
-          onTap: () {},
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
+          onTap: handleLogout,
         ),
       ],
     );
+  }
+
+  void handleLogout() async {
+    final result = await AuthApis.logout();
+    if (result) {
+      Get.offAllNamed('/login');
+    } else {
+      Get.showSnackbar(
+        MySnackbar(
+            success: false,
+            title: 'Logout',
+            message: 'An error has occurred, please try again later'),
+      );
+    }
   }
 
   GetBuilder<AccountPageController> darkModeSwitch() {

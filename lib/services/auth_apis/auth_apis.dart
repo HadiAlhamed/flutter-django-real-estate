@@ -185,7 +185,23 @@ class AuthApis {
     }
   }
 
-  static Future<void> logout() async {
+  static Future<bool> logout() async {
     // TODO: Add logout implementation if needed
+    try {
+      final response = await _dio.post(
+        '${Api.baseUrl}/users/logout/',
+      );
+      if (response.statusCode == 200) {
+        print("logged out successfully");
+        await TokenService.clearTokens();
+        return true;
+      } else {
+        print("logged out failed!!!");
+        return false;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+      return false;
+    }
   }
 }

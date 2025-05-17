@@ -11,6 +11,7 @@ class AuthInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final token = await TokenService.getAccessToken();
+    print("Access token is : $token");
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
     }
@@ -20,6 +21,7 @@ class AuthInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
+      print("dio got an 401 error!!!");
       final success = await AuthApis.refreshToken();
       if (success) {
         final newToken = await TokenService.getAccessToken();

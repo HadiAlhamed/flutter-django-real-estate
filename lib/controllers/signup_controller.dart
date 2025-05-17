@@ -39,4 +39,10 @@ class SignupController extends GetxController {
     hidePassword = true;
     update(['confirmPassword']);
   }
+
+  void clear() {
+    isLoading = false;
+    hidePassword = true;
+    hideConfirmPassword = true;
+  }
 }

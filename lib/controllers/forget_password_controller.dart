@@ -18,4 +18,11 @@ class ForgetPasswordController extends GetxController {
   set emailValue(String e) => email = e;
 
   set codeValue(String c) => code = c;
+
+  void clear() {
+    email = '';
+    code = '';
+    emailEntered = false;
+    codeVerified = false;
+  }
 }

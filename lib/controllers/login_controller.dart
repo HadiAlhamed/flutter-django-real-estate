@@ -18,6 +18,7 @@ class LoginController extends GetxController {
     isLoading = value;
     update(['loading']);
   }
+
   void changeIsLoadingGoogle(bool value) {
     isLoading = value;
     update(['loadingGoogle']);
@@ -26,5 +27,10 @@ class LoginController extends GetxController {
   void changeHidePassword(bool value) {
     hidePassword = true;
     update(['password']);
+  }
+
+  void clear() {
+    isLoading = false;
+    hidePassword = true;
   }
 }

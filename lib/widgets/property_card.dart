@@ -33,7 +33,7 @@ class PropertyCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     "16K SP",
                     style: h4TitleStyleBlack,
                   ),
@@ -50,7 +50,7 @@ class PropertyCard extends StatelessWidget {
                       infoIconText(Icons.bed_outlined, "2"),
                       infoIconText(Icons.bathtub_outlined, "1"),
                       if (favorite ?? false)
-                        Icon(Icons.favorite, color: primaryColor),
+                        const Icon(Icons.favorite, color: primaryColor),
                     ],
                   ),
                 ],

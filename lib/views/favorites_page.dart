@@ -23,7 +23,7 @@ class FavoritesPage extends StatelessWidget {
           ),
           itemCount: 10, // For example, 10 items for each tab
           itemBuilder: (context, index) {
-            return PropertyCard(
+            return const PropertyCard(
               favorite: true,
             );
           },

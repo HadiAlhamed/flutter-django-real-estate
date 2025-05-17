@@ -40,7 +40,7 @@ class ProfilePage extends StatelessWidget {
               const Divider(
                 thickness: 2,
               ),
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 50,
                 backgroundImage:
                     AssetImage('assets/images/Aqari_logo_primary_towers.png'),
@@ -68,7 +68,7 @@ class ProfilePage extends StatelessWidget {
                 controller: birthDateController,
                 hint: 'date of birth',
                 suffixWidget: IconButton(
-                  icon: Icon(Icons.date_range),
+                  icon: const Icon(Icons.date_range),
                   onPressed: () async {
                     DateTime? chosenBirthDate = await showDatePicker(
                       context: context,
@@ -90,7 +90,7 @@ class ProfilePage extends StatelessWidget {
               myProfileInput(
                 hint: 'Country',
                 controller: countryController,
-                suffixWidget: Icon(Icons.arrow_drop_down),
+                suffixWidget: const Icon(Icons.arrow_drop_down),
                 readOnly: true,
                 ontap: () {
                   print("HI");
@@ -130,7 +130,7 @@ class ProfilePage extends StatelessWidget {
                             const SizedBox(width: 10),
                             Text(dropDownController.selectedCountry),
                             const SizedBox(width: 4),
-                            Icon(Icons.arrow_drop_down),
+                            const Icon(Icons.arrow_drop_down),
                           ],
                         ),
                       ),
@@ -138,7 +138,7 @@ class ProfilePage extends StatelessWidget {
                   },
                 ),
               ),
-              MyButton(title: 'Update'),
+              const MyButton(title: 'Update'),
             ],
           ),
         ),
@@ -154,7 +154,7 @@ class ProfilePage extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Color.fromRGBO(0, 0, 0, 0.3),
                 offset: Offset(0, 2),
@@ -210,7 +210,7 @@ class ProfilePage extends StatelessWidget {
       borderSide: BorderSide.none,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Color.fromRGBO(0, 0, 0, 0.3),
             offset: Offset(0, 2),

@@ -26,6 +26,7 @@ class MyBottomNavigationBar extends StatelessWidget {
         unselectedItemColor: greyText,
         unselectedLabelStyle: h4TitleStyleGrey,
         showUnselectedLabels: true,
+        iconSize: 28,
         type: BottomNavigationBarType.fixed,
         onTap: handleBottomNavigation,
         items: [

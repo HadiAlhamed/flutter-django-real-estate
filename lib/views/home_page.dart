@@ -37,8 +37,8 @@ class _HomePageState extends State<HomePage>
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 245, 243, 243),
         elevation: 0,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+        leading: const Padding(
+          padding: EdgeInsets.only(left: 8.0),
           child: CircleAvatar(
             child: Icon(Icons.person),
           ),
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage>
                 fontSize: 20,
               ),
             ),
-            Text(
+            const Text(
               "Lama Dayoub",
               style: h2TitleStyleBlack,
             )
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage>
                     ),
                     itemCount: 10, // For example, 10 items for each tab
                     itemBuilder: (context, index) {
-                      return PropertyCard();
+                      return const PropertyCard();
                     },
                   );
                 }).toList(),
@@ -114,7 +114,7 @@ class _HomePageState extends State<HomePage>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Color.fromARGB(50, 79, 76, 76),
             offset: Offset(2, 2),

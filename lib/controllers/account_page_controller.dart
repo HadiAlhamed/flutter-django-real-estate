@@ -12,5 +12,4 @@ class AccountPageController extends GetxController {
     isSeller = value;
     update(['sellerMode']);
   }
-  
 }

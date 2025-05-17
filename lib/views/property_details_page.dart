@@ -71,7 +71,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
         children: [
           // Scrollable Content
           SingleChildScrollView(
-            padding: EdgeInsets.only(
+            padding: const EdgeInsets.only(
                 bottom: 90), // Prevent content from being hidden behind buttons
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,20 +79,20 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
                 Container(
                   height: screenHeight * 0.3,
                   width: double.infinity,
-                  decoration: BoxDecoration(),
+                  decoration: const BoxDecoration(),
                   clipBehavior: Clip.antiAlias,
                   child: Image.asset(
                     "assets/images/house.jpg",
                     fit: BoxFit.cover,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                const Padding(
+                  padding: EdgeInsets.only(top: 8.0, left: 8, right: 8),
                   child: Text("16,000 SP", style: h1TitleStyleBlack),
                 ),
-                Divider(),
+                const Divider(),
                 roomsInfo(),
-                Divider(),
+                const Divider(),
                 propertyDetails(),
                 const SizedBox(height: 20),
                 getLocationTitle(),
@@ -125,13 +125,13 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
               title: 'Buy Now',
               textStyle: buttonTextStylePrimary,
               buttonStyle: ButtonStyle(
-                overlayColor: WidgetStatePropertyAll(
-                  const Color.fromARGB(255, 214, 167, 224),
+                overlayColor: const WidgetStatePropertyAll(
+                  Color.fromARGB(255, 214, 167, 224),
                 ),
                 shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
-                    side: BorderSide(
+                    side: const BorderSide(
                       color: primaryColor,
                       width: 3,
                     ),
@@ -147,13 +147,13 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
                 title: 'Rent Now',
                 textStyle: buttonTextStylePrimary,
                 buttonStyle: ButtonStyle(
-                  overlayColor: WidgetStatePropertyAll(
-                    const Color.fromARGB(255, 214, 167, 224),
+                  overlayColor: const WidgetStatePropertyAll(
+                    Color.fromARGB(255, 214, 167, 224),
                   ),
                   shape: WidgetStatePropertyAll(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15),
-                      side: BorderSide(
+                      side: const BorderSide(
                         color: primaryColor,
                         width: 3,
                       ),
@@ -165,7 +165,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
                   backgroundColor: WidgetStateProperty.all(Colors.white),
                 ),
                 fitParent: true),
-            MyButton(title: 'Book tour', fitParent: true),
+            const MyButton(title: 'Book tour', fitParent: true),
           ],
         ),
       ),
@@ -173,12 +173,12 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
   }
 
   Padding getLocationTitle() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+    return const Padding(
+      padding: EdgeInsets.only(top: 8.0, left: 8, right: 8),
       child: Row(
         children: [
           Icon(Icons.gps_fixed),
-          const SizedBox(width: 10),
+          SizedBox(width: 10),
           Text("Location", style: h3TitleStyleBlack),
         ],
       ),
@@ -196,8 +196,8 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
       padding: const EdgeInsets.only(top: 8.0, left: 8, right: 8),
       child: FlutterMap(
         mapController: _mapController,
-        options: MapOptions(
-          interactionOptions: const InteractionOptions(
+        options: const MapOptions(
+          interactionOptions: InteractionOptions(
             flags: InteractiveFlag.none, // Disables all interactions
           ),
           initialCenter: LatLng(35.1867283, 35.9517433),
@@ -208,7 +208,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
             urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
             userAgentPackageName: 'com.example.app',
           ),
-          MarkerLayer(
+          const MarkerLayer(
             markers: [
               Marker(
                 width: 80.0,
@@ -233,7 +233,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Property Details",
             style: h2TitleStyleBlack,
           ),
@@ -254,7 +254,8 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Text("Flat in Lattakia Near Tishreen University With Beautiful View",
+          const Text(
+              "Flat in Lattakia Near Tishreen University With Beautiful View",
               style: h3TitleStyleBlack),
           const SizedBox(height: 15),
           Row(

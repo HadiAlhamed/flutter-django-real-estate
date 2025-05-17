@@ -60,12 +60,13 @@ class MyInputField extends StatelessWidget {
                     )),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide:
-                borderSide ?? BorderSide(color: primaryColorInactive, width: 3),
+            borderSide: borderSide ??
+                const BorderSide(color: primaryColorInactive, width: 3),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),
-            borderSide: borderSide ?? BorderSide(color: primaryColor, width: 4),
+            borderSide:
+                borderSide ?? const BorderSide(color: primaryColor, width: 4),
           ),
         ),
       ),

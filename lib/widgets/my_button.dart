@@ -34,8 +34,8 @@ class MyButton extends StatelessWidget {
       child: TextButton(
         style: buttonStyle ??
             ButtonStyle(
-              overlayColor: WidgetStatePropertyAll(
-                  const Color.fromARGB(255, 214, 167, 224)),
+              overlayColor: const WidgetStatePropertyAll(
+                  Color.fromARGB(255, 214, 167, 224)),
               shape: WidgetStatePropertyAll(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),

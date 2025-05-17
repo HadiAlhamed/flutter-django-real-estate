@@ -1,5 +1,30 @@
+# Flutter/Dart stuff
+.dart_tool/
+.packages
+.pub-cache/
+build/
+flutter_*.png
+
+# IDEs
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Platform-specific generated files
+android/app/.cxx/
+ios/Flutter/Flutter.framework
+macos/Flutter/GeneratedPluginRegistrant.swift
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugins.cmake
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
+
+
 # Miscellaneous
-android/app/.cxx/Debug/58o256z1/
 *.class
 *.log
 *.pyc

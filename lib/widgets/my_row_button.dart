@@ -20,7 +20,7 @@ class MyRowButton extends StatelessWidget {
       child: TextButton(
         style: ButtonStyle(
           overlayColor:
-              WidgetStatePropertyAll(const Color.fromARGB(255, 214, 167, 224)),
+              const WidgetStatePropertyAll(Color.fromARGB(255, 214, 167, 224)),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15),

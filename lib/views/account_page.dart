@@ -80,6 +80,7 @@ class AccountPage extends StatelessWidget {
             trailing: getSwitch(
               onChanged: (value) {
                 accountController.changeIsSeller(value);
+                bottomController.changeIsSeller(value);
               },
               switchValue: accountController.isSeller,
             ),
@@ -151,6 +152,8 @@ class AccountPage extends StatelessWidget {
   void handleLogout() async {
     final result = await AuthApis.logout();
     if (result) {
+      //remember to clear stuff
+      bottomController.clear();
       Get.offAllNamed('/login');
     } else {
       Get.showSnackbar(

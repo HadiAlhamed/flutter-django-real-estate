@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
 import 'package:get/get.dart';
-import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -9,9 +8,8 @@ import 'package:real_estate/textstyles/text_styles.dart';
 class MyBottomNavigationBar extends StatelessWidget {
   final int selectedIndex;
   final BottomNavigationBarController bottomController;
-  final AccountPageController accountController =
-      Get.find<AccountPageController>();
-  MyBottomNavigationBar({
+
+  const MyBottomNavigationBar({
     super.key,
     required this.selectedIndex,
     required this.bottomController,
@@ -19,55 +17,95 @@ class MyBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: selectedIndex,
-      selectedItemColor: primaryColor,
-      selectedLabelStyle: h4TitleStylePrimary,
-      unselectedItemColor: greyText,
-      unselectedLabelStyle: h4TitleStyleGrey,
-      showUnselectedLabels: true,
-      type: BottomNavigationBarType.fixed,
-      onTap: (index) {
-        print("index : $index");
-        bottomController.changeSelectedIndex(index: index);
-        if (index == 0) {
-          //go home
-          Get.offNamed('/home');
-        }
-        if (index == 2) {
-          Get.offNamed('/favoritesPage');
-        }
-        if (index == 3) {
-          //go accountpage
-          Get.offNamed('/accountPage');
-        }
-      },
-      items: [
-        const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.home,
+    return GetBuilder<BottomNavigationBarController>(
+      init: bottomController,
+      builder: (controller) => BottomNavigationBar(
+        currentIndex: selectedIndex,
+        selectedItemColor: primaryColor,
+        selectedLabelStyle: h4TitleStylePrimary,
+        unselectedItemColor: greyText,
+        unselectedLabelStyle: h4TitleStyleGrey,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        onTap: handleBottomNavigation,
+        items: [
+          getBottomItem(
+            icon: const Icon(Icons.home),
+            label: "Home",
           ),
-          label: "Home",
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.message_outlined,
+          getBottomItem(
+            icon: const Icon(
+              Icons.message_outlined,
+            ),
+            label: "Messages",
           ),
-          label: "Messages",
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.favorite_border_outlined,
+          if (bottomController.isSeller)
+            const BottomNavigationBarItem(
+              icon: CircleAvatar(
+                backgroundColor: primaryColor,
+                child: Icon(
+                  Icons.add,
+                  size: 30,
+                  color: Colors.white,
+                ),
+              ),
+              label: "",
+            ),
+          getBottomItem(
+            icon: const Icon(Icons.favorite),
+            label: "Favorites",
           ),
-          label: "Favorites",
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(
-            Icons.person,
+          getBottomItem(
+            icon: const Icon(Icons.person),
+            label: "Account",
           ),
-          label: "Account",
-        ),
-      ],
+        ],
+      ),
     );
+  }
+
+  BottomNavigationBarItem getBottomItem({
+    required String label,
+    required Icon icon,
+  }) {
+    return BottomNavigationBarItem(
+      icon: Padding(
+        padding: EdgeInsets.only(
+          top: bottomController.isSeller ? 0 : 8.0,
+        ),
+        child: icon,
+      ),
+      label: label,
+    );
+  }
+
+  void handleBottomNavigation(index) {
+    print("index : $index");
+    bottomController.changeSelectedIndex(index: index);
+    if (index == 0) {
+      //go home
+      Get.offNamed('/home');
+    }
+    if (index == 1) {
+      //go to messages
+    }
+    if (index == 2) {
+      if (bottomController.isSeller) {
+        Get.offNamed('/addPropertyPage');
+      } else {
+        Get.offNamed('/favoritesPage');
+      }
+    }
+    if (index == 3) {
+      //go accountpage
+      if (bottomController.isSeller) {
+        Get.offNamed('/favoritesPage');
+      } else {
+        Get.offNamed('/accountPage');
+      }
+    }
+    if (index == 4) {
+      Get.offNamed('/accountPage');
+    }
   }
 }

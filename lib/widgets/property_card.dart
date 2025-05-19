@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:real_estate/models/property.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 
 class PropertyCard extends StatelessWidget {
   final bool? favorite;
-  const PropertyCard({super.key, this.favorite});
+  final Property property;
+  const PropertyCard({
+    super.key,
+    this.favorite,
+    required this.property,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,21 +39,23 @@ class PropertyCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "16K SP",
+                  Text(
+                    "${property.price.toString()} \$",
                     style: h4TitleStyleBlack,
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    "Flat located in Lattakia Near Tishreen University",
+                    "${property.propertyType} located in ${property.city}",
                     style: h4TitleStyleGrey.copyWith(fontSize: 10),
                   ),
                   const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      infoIconText(Icons.aspect_ratio_outlined, "200 Sq m"),
-                      infoIconText(Icons.bed_outlined, "2"),
+                      infoIconText(Icons.aspect_ratio_outlined,
+                          "${property.area.toString()} Sq m"),
+                      infoIconText(Icons.bed_outlined,
+                          property.numberOfRooms.toString()),
                       infoIconText(Icons.bathtub_outlined, "1"),
                       if (favorite ?? false)
                         const Icon(Icons.favorite, color: primaryColor),

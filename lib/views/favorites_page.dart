@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
+import 'package:real_estate/models/property.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
 import 'package:real_estate/widgets/property_card.dart';
 
@@ -23,8 +24,18 @@ class FavoritesPage extends StatelessWidget {
           ),
           itemCount: 10, // For example, 10 items for each tab
           itemBuilder: (context, index) {
-            return const PropertyCard(
+            return PropertyCard(
               favorite: true,
+              property: Property(
+                area: 0,
+                city: 'dama',
+                isForRent: true,
+                numberOfRooms: 2,
+                price: 200,
+                propertyType: 'villa',
+                address: 'near my hear',
+                id: 212,
+              ),
             );
           },
         ),

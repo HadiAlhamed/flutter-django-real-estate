@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
+import 'package:real_estate/controllers/property_controller.dart';
+import 'package:real_estate/models/paginated_property.dart';
+import 'package:real_estate/models/property.dart';
+import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
@@ -8,14 +12,15 @@ import 'package:real_estate/widgets/property_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  final List<String> tabs = ['All', 'House', 'Flats', 'Villas'];
+  final PropertyController propertyController = Get.find<PropertyController>();
+
+  final List<String> tabs = ['All', 'House', 'Flat', 'Villa'];
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
   late TabController _tabController;
@@ -23,6 +28,24 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabs.length, vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchProperties();
+    });
+  }
+
+  Future<void> _fetchProperties() async {
+    propertyController.clearProperties();
+    propertyController.changeIsLoading(true);
+    PaginatedProperty pProperty =
+        PaginatedProperty(nextPageUrl: null, properties: []);
+    do {
+      pProperty =
+          await PropertiesApis.getProperties(url: pProperty.nextPageUrl);
+      for (var property in pProperty.properties) {
+        propertyController.addProperty(property);
+      }
+    } while (pProperty.nextPageUrl != null);
+    propertyController.changeIsLoading(false);
   }
 
   @override
@@ -76,22 +99,7 @@ class _HomePageState extends State<HomePage>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: tabs.map((tab) {
-                  return GridView.builder(
-                    padding: const EdgeInsets.only(top: 20),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // Two items per row
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 0.8, // Height to width ratio
-                    ),
-                    itemCount: 10, // For example, 10 items for each tab
-                    itemBuilder: (context, index) {
-                      return const PropertyCard();
-                    },
-                  );
-                }).toList(),
+                children: getPropertiesTypesLists(),
               ),
             ),
           ],
@@ -106,6 +114,63 @@ class _HomePageState extends State<HomePage>
           );
         },
       ),
+    );
+  }
+
+  List<GetBuilder<PropertyController>> getPropertiesTypesLists() {
+    return [
+      tabElement(builderId: 'all'),
+      tabElement(builderId: 'house'),
+      tabElement(builderId: 'flat'),
+      tabElement(builderId: 'villa'),
+    ];
+  }
+
+  GetBuilder<PropertyController> tabElement({
+    required String builderId,
+  }) {
+    List<Property> wantedList = [];
+    if (builderId == 'all') {
+      wantedList = propertyController.getAll;
+    } else if (builderId == 'house')
+      // ignore: curly_braces_in_flow_control_structures
+      wantedList = propertyController.getHouses;
+    else if (builderId == 'flat')
+      // ignore: curly_braces_in_flow_control_structures
+      wantedList = propertyController.getFlats;
+    else
+      // ignore: curly_braces_in_flow_control_structures
+      wantedList = propertyController.getVillas;
+    return GetBuilder<PropertyController>(
+      init: propertyController,
+      id: builderId,
+      builder: (contorller) {
+        if (propertyController.isLoading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return RefreshIndicator(
+          onRefresh: () async {
+            await _fetchProperties();
+          },
+          child: GridView.builder(
+            padding: const EdgeInsets.only(top: 20),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Two items per row
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.8, // Height to width ratio
+            ),
+            itemCount: wantedList.length, // For example, 10 items for each tab
+            itemBuilder: (context, index) {
+              return PropertyCard(
+                property: wantedList[index],
+              );
+            },
+          ),
+        );
+      },
     );
   }
 

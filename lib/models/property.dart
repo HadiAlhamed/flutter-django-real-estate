@@ -14,6 +14,7 @@ class Property {
   final LatLng? latitude;
   final LatLng? longitude;
   final String? mainPhotoUrl;
+  final String? address;
 
   Property({
     this.id,
@@ -26,6 +27,7 @@ class Property {
     this.latitude,
     this.longitude,
     this.mainPhotoUrl,
+    this.address,
   });
 
   factory Property.fromJson(Map<String, dynamic> json) {
@@ -40,6 +42,7 @@ class Property {
       latitude: json['latitude'],
       longitude: json['longitude'],
       mainPhotoUrl: json['main_photo'],
+      address: json['address'],
     );
   }
 
@@ -72,7 +75,8 @@ class Property {
         other.isForRent == isForRent &&
         other.latitude == latitude &&
         other.longitude == longitude &&
-        other.mainPhotoUrl == mainPhotoUrl;
+        other.mainPhotoUrl == mainPhotoUrl &&
+        other.address == address;
   }
 
   @override

@@ -101,7 +101,7 @@ class PropertiesApis {
     }
   }
 
-  static Future<PaginatedProperty> getProperty({String? url}) async {
+  static Future<PaginatedProperty> getProperties({String? url}) async {
     print("trying to get property page : $url");
     try {
       final response = await _dio.get(
@@ -114,7 +114,7 @@ class PropertiesApis {
           return Property.fromJson(property);
         }).toList();
         return PaginatedProperty(
-            nextPageUrl: data['next'] as String, properties: properties);
+            nextPageUrl: data['next'] as String?, properties: properties);
       } else {
         print(response.statusMessage);
         return PaginatedProperty(nextPageUrl: null, properties: []);

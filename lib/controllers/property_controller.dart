@@ -8,19 +8,32 @@ class PropertyController extends GetxController {
   List<Property> houses = [];
   List<Property> flats = [];
   List<Property> villas = [];
+  bool isLoading = false;
+  void changeIsLoading(bool value) {
+    isLoading = value;
+    update(['all', 'villa', 'house', 'flat']);
+  }
 
   Map<int, List<PropertyImage>> propertyImages = {};
   Map<int, List<Facility>> propertyFacilities = {};
+  List<Property> get getAll => properties;
+  List<Property> get getHouses => houses;
+  List<Property> get getVillas => villas;
+  List<Property> get getFlats => flats;
 
   void addProperty(Property property) {
     properties.add(property);
     if (property.propertyType.toLowerCase() == 'house') {
       houses.add(property);
+
+      update(['all', 'house']);
     } else if (property.propertyType.toLowerCase() == 'flat') {
       flats.add(property);
+      update(['all', 'flat']);
     } else {
       //villa
       villas.add(property);
+      update(['all', 'villa']);
     }
   }
 
@@ -45,8 +58,11 @@ class PropertyController extends GetxController {
 
   void clearProperties() {
     properties.clear();
-    propertyImages.clear();
-    propertyFacilities.clear();
+    houses.clear();
+    villas.clear();
+    flats.clear();
+    // propertyImages.clear();
+    // propertyFacilities.clear();
   }
 
   void clear() {

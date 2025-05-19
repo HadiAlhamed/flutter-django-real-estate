@@ -78,9 +78,19 @@ class AccountPage extends StatelessWidget {
           builder: (controller) => ListTile(
             title: const Text("Seller Mode", style: h2TitleStyleBlack),
             trailing: getSwitch(
-              onChanged: (value) {
-                accountController.changeIsSeller(value);
-                bottomController.changeIsSeller(value);
+              onChanged: (value) async {
+                bool result = await AuthApis.changeIsSeller(value);
+                if (result) {
+                  accountController.changeIsSeller(value);
+                  bottomController.changeIsSeller(value);
+                } else {
+                  Get.showSnackbar(
+                    MySnackbar(
+                        success: false,
+                        title: "Changing Seller Mode",
+                        message: "Failed to change , please try again later."),
+                  );
+                }
               },
               switchValue: accountController.isSeller,
             ),

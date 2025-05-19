@@ -1,0 +1,75 @@
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:real_estate/models/property.dart';
+import 'package:real_estate/models/property_image.dart';
+import 'package:real_estate/services/api.dart';
+import 'package:real_estate/services/auth_services/auth_interceptor.dart';
+
+class PropertiesApis {
+  static final Dio _dio = Dio();
+  static Future<void> init() async {
+    _dio.interceptors.add(AuthInterceptor(_dio));
+  }
+
+  static Future<Property?> addProperty({required Property property}) async {
+    print("trying to add a property...");
+    print(property);
+    try {
+      final response = await _dio.post(
+        "${Api.baseUrl}/properties/add/",
+        data: property.toJson(),
+      );
+      print("HI");
+      if (response.statusCode == 201) {
+        print("property added Successfully...");
+        final Map<String, dynamic> data = response.data;
+        final Property pro = Property.fromJson(data);
+        return pro;
+      } else {
+        print(response.statusMessage);
+        return null;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+      return null;
+    }
+  }
+
+  static Future<PropertyImage?> addImageToProperty(
+      {required int propertyId, required XFile image}) async {
+    print("trying to add a property image ...");
+    try {
+      // Read image bytes
+      final bytes = await image.readAsBytes();
+
+      // Prepare MultipartFile from bytes
+      final multipartImage = MultipartFile.fromBytes(
+        bytes,
+        filename: image.name,
+      );
+
+      // Create FormData
+      final formData = FormData.fromMap({
+        'image': multipartImage, // Make sure this key matches your backend
+        'propertyId': propertyId, // optional extra fields
+      });
+
+      final response = await _dio.post(
+        "${Api.baseUrl}/properties/$propertyId/images/add/",
+        data: formData,
+      );
+      if (response.statusCode == 201) {
+        print("property image added Successfully...");
+        final Map<String, dynamic> data = response.data;
+        final PropertyImage proImage = PropertyImage.fromJson(data);
+        return proImage;
+      } else {
+        print(response.statusMessage);
+        return null;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+      return null;
+    }
+  }
+}

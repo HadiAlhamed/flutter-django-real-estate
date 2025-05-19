@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:real_estate/models/facility.dart';
 import 'package:real_estate/models/property.dart';
 import 'package:real_estate/models/property_image.dart';
 import 'package:real_estate/services/api.dart';
@@ -63,6 +64,32 @@ class PropertiesApis {
         final Map<String, dynamic> data = response.data;
         final PropertyImage proImage = PropertyImage.fromJson(data);
         return proImage;
+      } else {
+        print(response.statusMessage);
+        return null;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+      return null;
+    }
+  }
+
+  static Future<Facility?> addFacilityToProperty(
+      {required int propertyId, required int facilityId}) async {
+    print("trying to add a property image ...");
+    try {
+      final response = await _dio.post(
+        "${Api.baseUrl}/properties/$propertyId/facilities/add/",
+        data: {
+          'property_id': propertyId,
+          'facility_id': facilityId,
+        },
+      );
+      if (response.statusCode == 201) {
+        print("property Facility added Successfully...");
+        final Map<String, dynamic> data = response.data;
+        final Facility facility = Facility.fromJson(data);
+        return facility;
       } else {
         print(response.statusMessage);
         return null;

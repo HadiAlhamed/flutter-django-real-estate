@@ -14,9 +14,10 @@ class AddPropertyController extends GetxController {
     index < 3 ? update(['firstRow']) : update(['secondRow']);
   }
 
+  bool getFacilitySelectedAt(int index) => facilitiesSelected[index];
   void changeIsForRent(value) {
     isForRent = value;
-    update(['rent']);
+    update(['isForRent']);
   }
 
   void setImagesPicked(List<XFile> images) {
@@ -28,6 +29,7 @@ class AddPropertyController extends GetxController {
   int get imagesLength => imagesPicked.length;
 
   List<XFile> get images => imagesPicked;
+  List<bool> get facilities => facilitiesSelected;
 
   void clearImages() {
     imagesPicked.clear();

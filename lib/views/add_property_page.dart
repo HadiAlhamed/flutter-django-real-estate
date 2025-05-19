@@ -7,6 +7,7 @@ import 'package:real_estate/controllers/add_property_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/drop_down_controller.dart';
 import 'package:real_estate/controllers/property_controller.dart';
+import 'package:real_estate/models/facility.dart';
 import 'package:real_estate/models/property.dart';
 import 'package:real_estate/models/property_image.dart';
 import 'package:real_estate/services/properties_apis/properties_apis.dart';
@@ -198,63 +199,7 @@ class AddPropertyPage extends StatelessWidget {
                 ),
                 MyButton(
                   title: "Add",
-                  onPressed: () async {
-                    if (formKey.currentState!.validate()) {
-                      final Property? propertyResult =
-                          await PropertiesApis.addProperty(
-                        property: Property(
-                          propertyType:
-                              addProController.selectedType.toLowerCase(),
-                          city: addProController.selectedCity,
-                          area: double.parse(areaController.text),
-                          price: double.parse(priceController.text),
-                          numberOfRooms: int.parse(roomController.text),
-                          isForRent: addProController.isForRent,
-                        ),
-                      );
-
-                      bool flag = propertyResult != null;
-
-                      Get.showSnackbar(
-                        MySnackbar(
-                          success: flag,
-                          title: "Add Property",
-                          message: !flag
-                              ? "Failed to add property , please try again later"
-                              : "Property was added successfully!",
-                        ),
-                      );
-                      if (flag) {
-                        propertyController.addProperty(propertyResult);
-                        //add added images if any were added ,
-                        //add facilities added , if there were any.
-                        int success = 0;
-                        for (var imageFile in addProController.images) {
-                          final PropertyImage? propertyImage =
-                              await PropertiesApis.addImageToProperty(
-                                  propertyId: propertyResult.id!,
-                                  image: imageFile);
-                          if (propertyImage != null) {
-                            propertyController.addImageToProperty(
-                                propertyId: propertyResult.id!,
-                                image: propertyImage);
-                            success++;
-                          }
-                        }
-                        bool allImagesAreAdded =
-                            success == addProController.imagesLength;
-                        Get.showSnackbar(
-                          MySnackbar(
-                            success: allImagesAreAdded,
-                            title: "Adding Images",
-                            message: allImagesAreAdded
-                                ? "All images were added successfully"
-                                : "Some problem happened while uploading images",
-                          ),
-                        );
-                      }
-                    }
-                  },
+                  onPressed: handleAddProperty,
                 ),
               ],
             ),
@@ -266,6 +211,105 @@ class AddPropertyPage extends StatelessWidget {
         bottomController: bottomController,
       ),
     );
+  }
+
+  void handleAddProperty() async {
+    if (formKey.currentState!.validate()) {
+      final Property? propertyResult = await PropertiesApis.addProperty(
+        property: Property(
+          propertyType: addProController.selectedType.toLowerCase(),
+          city: addProController.selectedCity,
+          area: double.parse(areaController.text),
+          price: double.parse(priceController.text),
+          numberOfRooms: int.parse(roomController.text),
+          isForRent: addProController.isForRent,
+        ),
+      );
+
+      bool flag = propertyResult != null;
+
+      Get.showSnackbar(
+        MySnackbar(
+          success: flag,
+          title: "Add Property",
+          message: !flag
+              ? "Failed to add property , please try again later"
+              : "Property was added successfully!",
+        ),
+      );
+      if (flag) {
+        propertyController.addProperty(propertyResult);
+        //add added images if any were added ,
+        //add facilities added , if there were any.
+        await Future.wait([
+          handleAddImages(propertyResult),
+          handleAddFacilities(propertyResult)
+        ]);
+        bottomController.changeSelectedIndex(
+          index: 0,
+        );
+        addProController.clear();
+        Get.offNamed('/home');
+      }
+    }
+  }
+
+  Future<void> handleAddFacilities(Property propertyResult) async {
+    int facilitySuccess = 0;
+    int isSelected = 0;
+    for (int i = 0; i < 6; i++) {
+      if (addProController.getFacilitySelectedAt(i)) {
+        //add it
+        isSelected++;
+        final Facility? facility = await PropertiesApis.addFacilityToProperty(
+          propertyId: propertyResult.id!,
+          facilityId: (i + 1),
+        );
+        if (facility != null) {
+          facilitySuccess++;
+          propertyController.addFacilityToProperty(
+            propertyId: propertyResult.id!,
+            facility: facility,
+          );
+        }
+      }
+    }
+    bool flag = facilitySuccess == isSelected;
+    Get.showSnackbar(
+      MySnackbar(
+        success: flag,
+        title: 'Adding Facilities',
+        message: flag
+            ? "Facilities were added successfully"
+            : "Failed to add all facilities",
+      ),
+    );
+  }
+
+  Future<void> handleAddImages(Property propertyResult) async {
+    if (addProController.imagesLength > 0) {
+      int ImagesSuccess = 0;
+      for (var imageFile in addProController.images) {
+        final PropertyImage? propertyImage =
+            await PropertiesApis.addImageToProperty(
+                propertyId: propertyResult.id!, image: imageFile);
+        if (propertyImage != null) {
+          propertyController.addImageToProperty(
+              propertyId: propertyResult.id!, image: propertyImage);
+          ImagesSuccess++;
+        }
+      }
+      bool allImagesAreAdded = ImagesSuccess == addProController.imagesLength;
+      Get.showSnackbar(
+        MySnackbar(
+          success: allImagesAreAdded,
+          title: "Adding Images",
+          message: allImagesAreAdded
+              ? "All images were added successfully"
+              : "Some problem happened while uploading images",
+        ),
+      );
+    }
   }
 
   Container getFacilitiesBox(double screenHeight) {
@@ -296,7 +340,7 @@ class AddPropertyPage extends StatelessWidget {
                   const SizedBox(
                     width: 4,
                   ),
-                  getFacility(index: 2, title: "Restaurant"),
+                  getFacility(index: 2, title: "Laundry"),
                 ],
               );
             },
@@ -308,15 +352,15 @@ class AddPropertyPage extends StatelessWidget {
               return Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    getFacility(index: 3, title: "Laundry"),
+                    getFacility(index: 3, title: "Gym & Fitness"),
                     const SizedBox(
                       width: 4,
                     ),
-                    getFacility(index: 4, title: "Sports"),
+                    getFacility(index: 4, title: "Restaurants"),
                     const SizedBox(
                       width: 4,
                     ),
-                    getFacility(index: 5, title: "Gym & Fitness"),
+                    getFacility(index: 5, title: "Pool"),
                   ]);
             },
           ),

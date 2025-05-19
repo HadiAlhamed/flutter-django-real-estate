@@ -205,4 +205,24 @@ class AuthApis {
       return false;
     }
   }
+
+  static Future<bool> changeIsSeller(bool isSeller) async {
+    try {
+      final response =
+          await _dio.patch('${Api.baseUrl}/users/profile/is-seller/', data: {
+        'is_seller': isSeller,
+      });
+      if (response.statusCode == 200) {
+        print("is Seller toggelled successfully");
+        return true;
+      } else {
+        print("is Seller couldn't be toggelled");
+        print(response.statusMessage);
+        return false;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+      return false;
+    }
+  }
 }

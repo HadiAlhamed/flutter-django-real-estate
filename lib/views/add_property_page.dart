@@ -1,13 +1,21 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/controllers/add_property_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/drop_down_controller.dart';
+import 'package:real_estate/controllers/property_controller.dart';
+import 'package:real_estate/models/property.dart';
+import 'package:real_estate/models/property_image.dart';
+import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
 import 'package:real_estate/widgets/my_button.dart';
 import 'package:real_estate/widgets/my_input_field.dart';
+import 'package:real_estate/widgets/my_snackbar.dart';
 
 class AddPropertyPage extends StatelessWidget {
   final BottomNavigationBarController bottomController =
@@ -16,10 +24,15 @@ class AddPropertyPage extends StatelessWidget {
   final TextEditingController bathController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+
   final DropDownController dropDownController = Get.find<DropDownController>();
+  final PropertyController propertyController = Get.find<PropertyController>();
 
   final AddPropertyController addProController =
       Get.find<AddPropertyController>();
+  final ImagePicker imagePicker = ImagePicker();
+
   final List<String> propertyType = ['House', 'Flat', 'Villa'];
   final List<String> cities = [
     "Afrin",
@@ -65,7 +78,7 @@ class AddPropertyPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.sizeOf(context).height;
     final double screenWidth = MediaQuery.sizeOf(context).width;
-    String? selectedCity = "", selectedType = '';
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -86,7 +99,8 @@ class AddPropertyPage extends StatelessWidget {
                 getDropdownFormField(
                   hint: "Property Type",
                   onChanged: (value) {
-                    selectedType = value;
+                    if (value == null) return;
+                    addProController.setSelectedType = value;
                   },
                   validatorHint: "Please choose your property type",
                   wantedList: propertyType,
@@ -97,7 +111,8 @@ class AddPropertyPage extends StatelessWidget {
                 getDropdownFormField(
                   hint: "City",
                   onChanged: (value) {
-                    selectedCity = value;
+                    if (value == null) return;
+                    addProController.setSelectedCity = value;
                   },
                   validatorHint:
                       "Please choose the city where this property is located",
@@ -135,13 +150,111 @@ class AddPropertyPage extends StatelessWidget {
                     Icons.aspect_ratio,
                   ),
                 ),
+                propertyInput(
+                  hint: 'Price',
+                  controller: priceController,
+                  keyboardType: TextInputType.number,
+                  suffixWidget: const Icon(
+                    Icons.attach_money,
+                  ),
+                ),
+                Row(
+                  children: [
+                    const Text("For Rent"),
+                    const SizedBox(width: 4),
+                    GetBuilder<AddPropertyController>(
+                      init: addProController,
+                      id: "isForRent",
+                      builder: (controller) => Radio<bool>(
+                        value: true,
+                        groupValue: addProController.isForRent,
+                        onChanged: (value) {
+                          if (value != null) {
+                            addProController.changeIsForRent(value);
+                          }
+                        },
+                      ),
+                    ),
+                    const Text("For Sale"),
+                    const SizedBox(width: 4),
+                    GetBuilder<AddPropertyController>(
+                      init: addProController,
+                      id: "isForRent",
+                      builder: (controller) => Radio<bool>(
+                        value: false,
+                        groupValue: addProController.isForRent,
+                        onChanged: (value) {
+                          if (value != null) {
+                            addProController.changeIsForRent(value);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
                 getFacilitiesBox(screenHeight),
                 const SizedBox(
                   height: 20,
                 ),
                 MyButton(
                   title: "Add",
-                  onPressed: () {},
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      final Property? propertyResult =
+                          await PropertiesApis.addProperty(
+                        property: Property(
+                          propertyType:
+                              addProController.selectedType.toLowerCase(),
+                          city: addProController.selectedCity,
+                          area: double.parse(areaController.text),
+                          price: double.parse(priceController.text),
+                          numberOfRooms: int.parse(roomController.text),
+                          isForRent: addProController.isForRent,
+                        ),
+                      );
+
+                      bool flag = propertyResult != null;
+
+                      Get.showSnackbar(
+                        MySnackbar(
+                          success: flag,
+                          title: "Add Property",
+                          message: !flag
+                              ? "Failed to add property , please try again later"
+                              : "Property was added successfully!",
+                        ),
+                      );
+                      if (flag) {
+                        propertyController.addProperty(propertyResult);
+                        //add added images if any were added ,
+                        //add facilities added , if there were any.
+                        int success = 0;
+                        for (var imageFile in addProController.images) {
+                          final PropertyImage? propertyImage =
+                              await PropertiesApis.addImageToProperty(
+                                  propertyId: propertyResult.id!,
+                                  image: imageFile);
+                          if (propertyImage != null) {
+                            propertyController.addImageToProperty(
+                                propertyId: propertyResult.id!,
+                                image: propertyImage);
+                            success++;
+                          }
+                        }
+                        bool allImagesAreAdded =
+                            success == addProController.imagesLength;
+                        Get.showSnackbar(
+                          MySnackbar(
+                            success: allImagesAreAdded,
+                            title: "Adding Images",
+                            message: allImagesAreAdded
+                                ? "All images were added successfully"
+                                : "Some problem happened while uploading images",
+                          ),
+                        );
+                      }
+                    }
+                  },
                 ),
               ],
             ),
@@ -223,7 +336,9 @@ class AddPropertyPage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: addProController.selected[index] ? primaryColor : Colors.black,
+          color: addProController.facilitiesSelected[index]
+              ? primaryColor
+              : Colors.black,
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -273,43 +388,169 @@ class AddPropertyPage extends StatelessWidget {
     );
   }
 
-  Center addImagesWidget(double screenWidth, double screenHeight) {
-    return Center(
-      child: Container(
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 221, 218, 218),
-          borderRadius: BorderRadius.circular(10),
+  GetBuilder<AddPropertyController> addImagesWidget(
+      double screenWidth, double screenHeight) {
+    return GetBuilder<AddPropertyController>(
+      init: addProController,
+      id: 'imagePicker',
+      builder: (controller) => Center(
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 221, 218, 218),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          width: 0.8 * screenWidth,
+          height: 0.31 * screenHeight,
+          child: addProController.imagesLength == 0
+              ? initialImagePickerWidget(imagePicker)
+              : selectedImageWidget(screenHeight, screenWidth),
         ),
-        width: 0.5 * screenWidth,
-        height: 0.25 * screenHeight,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircleAvatar(
-              backgroundColor: Colors.black,
-              child: Icon(Icons.image_search, color: Colors.white),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text("Add Photos",
-                style: h1TitleStyleBlack.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                )),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              "Max 10 images",
-              style: h4TitleStyleBlack.copyWith(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
+      ),
+    );
+  }
+
+  Padding selectedImageWidget(double screenHeight, double screenWidth) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          getRowImages(
+            start: 0,
+            end: 4,
+            screenHeight: screenHeight,
+            screenWidth: screenWidth,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          getRowImages(
+            start: 4,
+            end: 7,
+            screenHeight: screenHeight,
+            screenWidth: screenWidth,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          getRowImages(
+            start: 7,
+            end: 10,
+            screenHeight: screenHeight,
+            screenWidth: screenWidth,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          //add new images icon , clear chosen images icon
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              addNewImageIcon(imagePicker),
+              IconButton(
+                tooltip: "Delete all images selected",
+                onPressed: () {
+                  addProController.clearImages();
+                },
+                icon: const Icon(Icons.delete, color: Colors.red),
               ),
-            ),
-          ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getRowImages({
+    required int start,
+    required int end,
+    required double screenHeight,
+    required double screenWidth,
+  }) {
+    List<Widget> images = [];
+    for (int i = start; i < end; i++) {
+      if (i >= addProController.imagesLength) break;
+      images.add(
+        Container(
+          width: (0.7 * screenWidth) / (4.0),
+          height: (0.25 * screenHeight) / 4.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            shape: BoxShape.rectangle,
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Image.file(
+            File(addProController.getImageAt(i).path),
+            fit: BoxFit.cover,
+            width: (0.7 * screenWidth) / (4.0),
+            height: (0.25 * screenHeight) / 4.0,
+            alignment: Alignment.center,
+          ),
         ),
+      );
+      if (i != end - 1) {
+        images.add(const SizedBox(
+          width: 4,
+        ));
+      }
+    }
+    if (images.isEmpty) return const SizedBox.shrink();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: images,
+    );
+  }
+
+  Column initialImagePickerWidget(ImagePicker imagePicker) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        addNewImageIcon(imagePicker),
+        const SizedBox(
+          height: 10,
+        ),
+        Text("Add Photos",
+            style: h1TitleStyleBlack.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            )),
+        const SizedBox(
+          height: 10,
+        ),
+        Text(
+          "Max 10 images",
+          style: h4TitleStyleBlack.copyWith(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+
+  InkWell addNewImageIcon(ImagePicker imagePicker) {
+    return InkWell(
+      onTap: () async {
+        try {
+          List<XFile?> newImagesPicked = await imagePicker.pickMultiImage(
+            limit: 10,
+          );
+          List<XFile> imagesPicked = [];
+          for (var image in newImagesPicked) {
+            if (image == null) continue;
+            imagesPicked.add(image);
+          }
+          if (imagesPicked.isNotEmpty) {
+            addProController.setImagesPicked(imagesPicked);
+          }
+        } catch (e) {
+          print("Error while loading images from image picker : $e");
+        }
+      },
+      child: const CircleAvatar(
+        backgroundColor: Colors.black,
+        child: Icon(Icons.image_search, color: Colors.white),
       ),
     );
   }

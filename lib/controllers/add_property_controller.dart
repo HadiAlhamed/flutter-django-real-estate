@@ -1,13 +1,45 @@
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddPropertyController extends GetxController {
-  List<bool> selected = List.generate(6, (index) => false);
+  List<bool> facilitiesSelected = List.generate(6, (index) => false);
+  List<XFile> imagesPicked = [];
+  bool isForRent = true;
+  String selectedType = '';
+  String selectedCity = '';
+  set setSelectedCity(String city) => selectedCity = city;
+  set setSelectedType(String type) => selectedType = type;
   void flipSelectedAt(int index) {
-    selected[index] = !selected[index];
+    facilitiesSelected[index] = !facilitiesSelected[index];
     index < 3 ? update(['firstRow']) : update(['secondRow']);
   }
 
+  void changeIsForRent(value) {
+    isForRent = value;
+    update(['rent']);
+  }
+
+  void setImagesPicked(List<XFile> images) {
+    clearImages();
+    imagesPicked.addAll(images);
+    update(['imagePicker']);
+  }
+
+  int get imagesLength => imagesPicked.length;
+
+  List<XFile> get images => imagesPicked;
+
+  void clearImages() {
+    imagesPicked.clear();
+    update(['imagePicker']);
+  }
+
+  XFile getImageAt(int index) => imagesPicked[index];
   void clear() {
-    selected = List.generate(6, (index) => false);
+    facilitiesSelected = List.generate(6, (index) => false);
+    imagesPicked = [];
+    isForRent = true;
+    selectedType = '';
+    selectedCity = '';
   }
 }

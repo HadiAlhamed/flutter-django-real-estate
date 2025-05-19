@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:real_estate/bindings/my_bindings.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/services/auth_services/token_service.dart';
+import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/views/account_page.dart';
 import 'package:real_estate/views/add_property_page.dart';
@@ -20,6 +21,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Future.wait([
     AuthApis.init(),
+    PropertiesApis.init(),
     TokenService.clearTokens(),
   ]);
   runApp(const MyApp());

@@ -5,6 +5,17 @@ class ForgetPasswordController extends GetxController {
   bool codeVerified = false;
   String email = '';
   String code = '';
+  bool hidePassword = true;
+  bool hideCpassword = true;
+  void flipHidePassword() {
+    hidePassword = !hidePassword;
+    update(['password']);
+  }
+  void flipHideCpassword() {
+    hideCpassword = !hideCpassword;
+    update(['cpassword']);
+  }
+
   void changeEmailFlag(bool value) {
     emailEntered = value;
     update(['main']);

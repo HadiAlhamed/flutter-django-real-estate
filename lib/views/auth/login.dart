@@ -81,7 +81,9 @@ class Login extends StatelessWidget {
                       Container(
                         margin: const EdgeInsets.only(bottom: 20),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Get.toNamed('/forgetPassword');
+                          },
                           child: const Text(
                             "Forget Password?",
                             style: h3TitleStylePrimary,

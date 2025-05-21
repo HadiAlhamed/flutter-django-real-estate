@@ -225,4 +225,30 @@ class AuthApis {
       return false;
     }
   }
+
+  static Future<bool> setNewPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await _dio.post(
+        "${Api.baseUrl}/users/set-new-password/",
+        data: {
+          'email': email,
+          'code': code,
+          'new_password': newPassword,
+        },
+      );
+      print(response.statusMessage);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+      return false;
+    }
+  }
 }

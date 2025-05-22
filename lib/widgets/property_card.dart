@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:real_estate/models/property.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -15,7 +16,9 @@ class PropertyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Get.toNamed('/propertyDetails', arguments: {'propertyId': property.id!});
+      },
       child: Card(
         color: Colors.white,
         shape: RoundedRectangleBorder(

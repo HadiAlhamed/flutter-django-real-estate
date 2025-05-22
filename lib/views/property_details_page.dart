@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:real_estate/controllers/property_details_controller.dart';
+import 'package:real_estate/models/facility.dart';
+import 'package:real_estate/models/property_details.dart';
+import 'package:real_estate/models/property_image.dart';
+import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
@@ -16,11 +22,31 @@ class PropertyDetailsPage extends StatefulWidget {
 class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
   LatLng? _currentLocation;
   final MapController _mapController = MapController();
-
+  final PropertyDetailsController pdController =
+      Get.find<PropertyDetailsController>();
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchPropertyDetails();
+    });
     // _determinePosition();
+  }
+
+  Future<void> _fetchPropertyDetails() async {
+    pdController.changeIsLoading(true);
+    final args = Get.arguments as Map<String, dynamic>;
+    final propertyId = args['propertyId'];
+    final PropertyDetails? propertyDetails =
+        await PropertiesApis.getPropertyDetails(
+      propertyId: propertyId,
+    );
+    if (propertyDetails == null) {
+      print("property details is null");
+      return;
+    }
+    pdController.propertyDetails = propertyDetails;
+    pdController.changeIsLoading(false);
   }
 
   Future<void> _determinePosition() async {
@@ -67,105 +93,79 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
     return Scaffold(
-      body: Stack(
-        children: [
-          // Scrollable Content
-          SingleChildScrollView(
-            padding: const EdgeInsets.only(
-                bottom: 90), // Prevent content from being hidden behind buttons
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: screenHeight * 0.3,
-                  width: double.infinity,
-                  decoration: const BoxDecoration(),
-                  clipBehavior: Clip.antiAlias,
-                  child: Image.asset(
-                    "assets/images/house.jpg",
-                    fit: BoxFit.cover,
-                  ),
+      body: GetBuilder<PropertyDetailsController>(
+        init: pdController,
+        id: 'main',
+        builder: (controller) {
+          if (pdController.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Stack(
+            children: [
+              // Scrollable Content
+              SingleChildScrollView(
+                padding: const EdgeInsets.only(
+                    bottom:
+                        90), // Prevent content from being hidden behind buttons
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: screenHeight * 0.3,
+                      width: double.infinity,
+                      decoration: const BoxDecoration(),
+                      clipBehavior: Clip.antiAlias,
+                      child: pdController.propertyDetails!.images.isEmpty
+                          ? Image.asset(
+                              "assets/images/house.jpg",
+                              fit: BoxFit.cover,
+                            )
+                          : getImagePageView(),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(top: 8.0, left: 8, right: 8),
+                      child: Text(
+                        "${pdController.propertyDetails!.price.toString()} \$",
+                        style: h1TitleStyleBlack,
+                      ),
+                    ),
+                    const Divider(),
+                    roomsInfo(),
+                    const Divider(),
+                    propertyDetails(),
+                    const SizedBox(height: 20),
+                    getLocationTitle(),
+                    getFlutterMap(),
+                    const SizedBox(height: 5), // Extra space to avoid overlap
+                  ],
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 8.0, left: 8, right: 8),
-                  child: Text("16,000 SP", style: h1TitleStyleBlack),
-                ),
-                const Divider(),
-                roomsInfo(),
-                const Divider(),
-                propertyDetails(),
-                const SizedBox(height: 20),
-                getLocationTitle(),
-                getFlutterMap(),
-                const SizedBox(height: 5), // Extra space to avoid overlap
-              ],
-            ),
-          ),
+              ),
 
-          // Fixed Bottom Buttons (Like bottomNavigationBar)
-          buyRentBookBar(),
-        ],
+              // Fixed Bottom Buttons (Like bottomNavigationBar)
+              bookNow(),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Positioned buyRentBookBar() {
+  Widget bookNow() {
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     return Positioned(
       bottom: 0, // Distance from the bottom of the screen
       left: 0,
       right: 0,
       child: Container(
-        color: const Color.fromARGB(255, 238, 235, 235),
-        padding: const EdgeInsets.all(8),
+        color: Colors.transparent,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             MyButton(
-              fitParent: true,
-              title: 'Buy Now',
-              textStyle: buttonTextStylePrimary,
-              buttonStyle: ButtonStyle(
-                overlayColor: const WidgetStatePropertyAll(
-                  Color.fromARGB(255, 214, 167, 224),
-                ),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    side: const BorderSide(
-                      color: primaryColor,
-                      width: 3,
-                    ),
-                  ),
-                ),
-                padding: WidgetStateProperty.all(
-                  const EdgeInsets.all(12),
-                ),
-                backgroundColor: WidgetStateProperty.all(Colors.white),
-              ),
+              title: 'Book Now',
+              width: 0.8 * screenWidth,
             ),
-            MyButton(
-                title: 'Rent Now',
-                textStyle: buttonTextStylePrimary,
-                buttonStyle: ButtonStyle(
-                  overlayColor: const WidgetStatePropertyAll(
-                    Color.fromARGB(255, 214, 167, 224),
-                  ),
-                  shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                      side: const BorderSide(
-                        color: primaryColor,
-                        width: 3,
-                      ),
-                    ),
-                  ),
-                  padding: WidgetStateProperty.all(
-                    const EdgeInsets.all(12),
-                  ),
-                  backgroundColor: WidgetStateProperty.all(Colors.white),
-                ),
-                fitParent: true),
-            const MyButton(title: 'Book tour', fitParent: true),
           ],
         ),
       ),
@@ -239,7 +239,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
           ),
           const SizedBox(height: 15),
           Text(
-            "a 200 square meter house with a backyard that has a pool and a playground for kids",
+            "a ${pdController.propertyDetails!.area.toString()} squared meters ${pdController.propertyDetails!.propertyType} ${pdController.propertyDetails!.facilities.isEmpty ? "" : getFacilities()}.",
             style: h4TitleStyleBlack.copyWith(
               fontWeight: FontWeight.w500,
             ),
@@ -254,17 +254,26 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          const Text(
-              "Flat in Lattakia Near Tishreen University With Beautiful View",
+          Text(
+              "${pdController.propertyDetails!.propertyType} in ${pdController.propertyDetails!.city} ${pdController.propertyDetails!.details ?? ""}",
               style: h3TitleStyleBlack),
           const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              detailInfo(Icons.bed, "2 beds"),
-              detailInfo(Icons.bathtub, "2 bath"),
-              detailInfo(Icons.aspect_ratio, "200 Sqm"),
+              detailInfo(
+                Icons.bed,
+                "${pdController.propertyDetails!.numberOfRooms} beds",
+              ),
+              detailInfo(
+                Icons.bathtub,
+                "2 bath",
+              ),
+              detailInfo(
+                Icons.aspect_ratio,
+                "${pdController.propertyDetails!.area.toString()} Sqm",
+              ),
             ],
           ),
         ],
@@ -289,6 +298,42 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
           width: 10,
         ),
       ],
+    );
+  }
+
+  String getFacilities() {
+    String result = "with";
+    int len = pdController.propertyDetails!.facilities.length;
+    for (int i = 0; i < len; i++) {
+      Facility? facility = pdController.propertyDetails!.facilities[i];
+      if (i == 0) {
+        result += " ${facility!.name}";
+      } else if (i == len - 1)
+        // ignore: curly_braces_in_flow_control_structures
+        result += " and ${facility!.name}";
+      else
+        // ignore: curly_braces_in_flow_control_structures
+        result += ', ${facility!.name}';
+    }
+
+    return result;
+  }
+
+  PageView getImagePageView() {
+    List<PropertyImage?> images = pdController.propertyDetails!.images;
+    return PageView.builder(
+      itemCount: images.length,
+      itemBuilder: (context, index) {
+        return Image.network(
+          images[index]?.imageUrl ?? '',
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return const Center(child: CircularProgressIndicator());
+          },
+          errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+        );
+      },
     );
   }
 }

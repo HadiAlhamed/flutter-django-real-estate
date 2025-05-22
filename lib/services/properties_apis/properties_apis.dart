@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/models/facility.dart';
 import 'package:real_estate/models/paginated_property.dart';
 import 'package:real_estate/models/property.dart';
+import 'package:real_estate/models/property_details.dart';
 import 'package:real_estate/models/property_image.dart';
 import 'package:real_estate/services/api.dart';
 import 'package:real_estate/services/auth_services/auth_interceptor.dart';
@@ -122,6 +123,26 @@ class PropertiesApis {
     } catch (e) {
       print("Network Error : $e");
       return PaginatedProperty(nextPageUrl: null, properties: []);
+    }
+  }
+
+  static Future<PropertyDetails?> getPropertyDetails(
+      {required int propertyId}) async {
+    try {
+      final response =
+          await _dio.get('${Api.baseUrl}/properties/$propertyId/', data: {
+        'property_id': propertyId,
+      });
+      print(response.statusMessage);
+      if (response.statusCode == 200) {
+        return PropertyDetails.fromJson(response.data as Map<String, dynamic>);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print("Network Error : $e");
+
+      return null;
     }
   }
 }

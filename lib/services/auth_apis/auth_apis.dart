@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:real_estate/models/profile_info.dart';
 import 'package:real_estate/services/api.dart';
 import 'package:real_estate/services/auth_services/auth_interceptor.dart';
 import 'package:real_estate/services/auth_services/token_service.dart';
@@ -272,8 +273,7 @@ class AuthApis {
         if (country != null) 'country': country,
         if (phoneNumber != null) 'phone_number': phoneNumber,
         if (gender != null) 'gender': gender,
-        if (photo != null)
-          'photo': await _handleImage(photo),
+        if (photo != null) 'photo': await _handleImage(photo),
       });
 
       final response = await _dio.patch(
@@ -292,6 +292,27 @@ class AuthApis {
         print("❌ General error: $e");
       }
       return false;
+    }
+  }
+
+  static Future<ProfileInfo?> getProfile() async {
+    try {
+      final response = await _dio.get('${Api.baseUrl}/users/profile/');
+      print(response.statusMessage);
+      if (response.statusCode == 200) {
+        print(response.data['profile']);
+        return ProfileInfo.fromJson(response.data['profile']);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print(e.response?.statusCode);
+        print(e.response?.data);
+      } else {
+        print("Network Error : $e");
+      }
+      return null;
     }
   }
 

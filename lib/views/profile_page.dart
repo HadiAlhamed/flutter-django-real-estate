@@ -59,7 +59,7 @@ class ProfilePage extends StatelessWidget {
                     radius: screenWidth * 0.3,
                     backgroundImage: profileController.profilePhoto != null
                         ? FileImage(
-                            File(profilePhoto!.path),
+                            File(profileController.profilePhoto!.path),
                           )
                         : const AssetImage(
                             'assets/images/Aqari_logo_primary_towers.png'),
@@ -172,16 +172,35 @@ class ProfilePage extends StatelessWidget {
                 title: 'Update',
                 onPressed: () async {
                   bool result = await AuthApis.updateProfile(
-                    firstName: firstNameController.text.trim(),
-                    lastName: lastNameController.text.trim(),
-                    bdate: birthDateController.text.trim(),
-                    country: countryController.text,
-                    phoneNumber: phoneController.text.trim(),
-                    photo: profilePhoto,
+                    firstName: _handleNullValues(
+                      firstNameController.text.trim(),
+                      profileController.currentUserInfo?.firstName ?? 'Guest',
+                    ),
+                    lastName: _handleNullValues(
+                      lastNameController.text.trim(),
+                      profileController.currentUserInfo?.lastName ?? 'User',
+                    ),
+                    bdate: _handleNullValues(
+                      birthDateController.text.trim(),
+                      DateFormat('yyyy-MM-dd')
+                          .format(profileController.currentUserInfo!.birthDate),
+                    ),
+                    country: _handleNullValues(
+                      countryController.text.trim(),
+                      profileController.currentUserInfo?.country ?? 'Syria',
+                    ),
+                    phoneNumber: _handleNullValues(
+                      phoneController.text.trim(),
+                      profileController.currentUserInfo?.phoneNumber ??
+                          '000000000',
+                    ),
+                    photo: profilePhoto ?? profileController.profilePhoto,
+                    gender: _handleNullValues(
+                      dropDownController.selectedGender[0],
+                      profileController.currentUserInfo?.gender ?? 'M',
+                    ),
                   );
                   if (result) {
-                    Api.box.write('firstName', firstNameController.text.trim());
-                    Api.box.write('lastName', lastNameController.text.trim());
                     Get.back();
                   } else {
                     Get.showSnackbar(
@@ -245,6 +264,14 @@ class ProfilePage extends StatelessWidget {
         );
       },
     );
+  }
+
+  _handleNullValues(String? value, String candValue) {
+    if (value == null || value == '') {
+      return candValue;
+    } else {
+      return value;
+    }
   }
 
   MyInputField myProfileInput(

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
+import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -16,6 +17,7 @@ class AccountPage extends StatelessWidget {
       Get.find<AccountPageController>();
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
+  final ProfileController profileController = Get.find<ProfileController>();
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.sizeOf(context).height;
@@ -107,14 +109,21 @@ class AccountPage extends StatelessWidget {
         color: primaryColor,
       ),
       height: 0.2 * screenHeight,
-      child: const ListTile(
-        contentPadding: EdgeInsets.only(top: 60, left: 10, right: 8),
-        leading: CircleAvatar(
+      child: ListTile(
+        contentPadding: const EdgeInsets.only(top: 60, left: 10, right: 8),
+        leading: const CircleAvatar(
           radius: 25,
           backgroundImage: AssetImage('assets/images/person.jpg'),
         ),
-        title: Text("Joe Biden", style: h2TitleStyleWhite),
-        trailing: Icon(Icons.notifications, size: 30, color: Colors.white),
+        title: GetBuilder<ProfileController>(
+          init: profileController,
+          id: 'fullName',
+          builder: (controller) => Text(
+              "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
+              style: h2TitleStyleWhite),
+        ),
+        trailing:
+            const Icon(Icons.notifications, size: 30, color: Colors.white),
       ),
     );
   }

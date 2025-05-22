@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
+import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/controllers/property_controller.dart';
 import 'package:real_estate/models/paginated_property.dart';
+import 'package:real_estate/models/profile_info.dart';
 import 'package:real_estate/models/property.dart';
+import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -23,6 +26,7 @@ class _HomePageState extends State<HomePage>
   final List<String> tabs = ['All', 'House', 'Flat', 'Villa'];
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
+  final ProfileController profileController = Get.find<ProfileController>();
   late TabController _tabController;
   @override
   void initState() {
@@ -30,7 +34,17 @@ class _HomePageState extends State<HomePage>
     _tabController = TabController(length: tabs.length, vsync: this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchProperties();
+      _fetchUserInfo();
     });
+  }
+
+  Future<void> _fetchUserInfo() async {
+    ProfileInfo? profileInfo = await AuthApis.getProfile();
+    if (profileInfo == null) {
+      print("!!!! returned profileInfo is null");
+      return;
+    }
+    profileController.changeCurrentUserInfo(profileInfo);
   }
 
   Future<void> _fetchProperties() async {
@@ -75,10 +89,13 @@ class _HomePageState extends State<HomePage>
                 fontSize: 20,
               ),
             ),
-            const Text(
-              "Lama Dayoub",
-              style: h2TitleStyleBlack,
-            )
+            GetBuilder<ProfileController>(
+              init: profileController,
+              id: 'fullName',
+              builder: (controller) => Text(
+                  "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
+                  style: h2TitleStyleBlack),
+            ),
           ],
         ),
       ),
@@ -152,7 +169,10 @@ class _HomePageState extends State<HomePage>
         }
         return RefreshIndicator(
           onRefresh: () async {
-            await _fetchProperties();
+            await Future.wait([
+              _fetchProperties(),
+              _fetchUserInfo(),
+            ]);
           },
           child: GridView.builder(
             padding: const EdgeInsets.only(top: 20),

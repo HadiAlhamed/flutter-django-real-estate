@@ -298,6 +298,7 @@ class AuthApis {
   static Future<ProfileInfo?> getProfile() async {
     try {
       final response = await _dio.get('${Api.baseUrl}/users/profile/');
+      print("HI");
       print(response.statusMessage);
       if (response.statusCode == 200) {
         print(response.data['profile']);

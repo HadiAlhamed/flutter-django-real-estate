@@ -25,13 +25,15 @@ class ProfilePage extends StatelessWidget {
   final DropDownController dropDownController = Get.find<DropDownController>();
   final ProfileController profileController = Get.find<ProfileController>();
   final ImagePicker imagePicker = ImagePicker();
-
   XFile? profilePhoto;
+  final args = Get.arguments;
   ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.sizeOf(context).width;
+    final bool isNew = args?['isNew'] ?? false;
+
     emailController.text = 'example@gmail.com';
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 235, 235),
@@ -171,6 +173,77 @@ class ProfilePage extends StatelessWidget {
               MyButton(
                 title: 'Update',
                 onPressed: () async {
+                  if (isNew) {
+                    if (profilePhoto == null) {
+                      Get.showSnackbar(
+                        MySnackbar(
+                            success: false,
+                            title: 'Missing Info',
+                            message: "Please enter your profile picture"),
+                      );
+                      return;
+                    }
+                    if (_checkIsEmpty(firstNameController.text.trim())) {
+                      Get.showSnackbar(
+                        MySnackbar(
+                            success: false,
+                            title: 'Missing Info',
+                            message: "Please enter your first name"),
+                      );
+                      return;
+                    }
+
+                    if (_checkIsEmpty(lastNameController.text.trim())) {
+                      Get.showSnackbar(
+                        MySnackbar(
+                            success: false,
+                            title: 'Missing Info',
+                            message: "Please enter your last name"),
+                      );
+                      return;
+                    }
+
+                    if (_checkIsEmpty(countryController.text.trim())) {
+                      Get.showSnackbar(
+                        MySnackbar(
+                            success: false,
+                            title: 'Missing Info',
+                            message: "Please enter your country"),
+                      );
+                      return;
+                    }
+
+                    if (_checkIsEmpty(birthDateController.text.trim())) {
+                      Get.showSnackbar(
+                        MySnackbar(
+                            success: false,
+                            title: 'Missing Info',
+                            message: "Please enter your birth date"),
+                      );
+                      return;
+                    }
+
+                    if (_checkIsEmpty(dropDownController.selectedGender)) {
+                      Get.showSnackbar(
+                        MySnackbar(
+                            success: false,
+                            title: 'Missing Info',
+                            message: "Please enter your gender"),
+                      );
+                      return;
+                    }
+
+                    if (_checkIsEmpty(phoneController.text.trim())) {
+                      Get.showSnackbar(
+                        MySnackbar(
+                            success: false,
+                            title: 'Missing Info',
+                            message: "Please enter your phone number"),
+                      );
+                      return;
+                    }
+                  }
+                  print("all entered.....");
                   bool result = await AuthApis.updateProfile(
                     firstName: _handleNullValues(
                       firstNameController.text.trim(),
@@ -182,8 +255,9 @@ class ProfilePage extends StatelessWidget {
                     ),
                     bdate: _handleNullValues(
                       birthDateController.text.trim(),
-                      DateFormat('yyyy-MM-dd')
-                          .format(profileController.currentUserInfo!.birthDate),
+                      DateFormat('yyyy-MM-dd').format(
+                          profileController.currentUserInfo?.birthDate ??
+                              DateTime(2025)),
                     ),
                     country: _handleNullValues(
                       countryController.text.trim(),
@@ -200,8 +274,13 @@ class ProfilePage extends StatelessWidget {
                       profileController.currentUserInfo?.gender ?? 'M',
                     ),
                   );
+                  print("got updating profile info result");
                   if (result) {
-                    Get.back();
+                    if (isNew) {
+                      Get.offAllNamed('/home');
+                    } else {
+                      Get.back();
+                    }
                   } else {
                     Get.showSnackbar(
                       MySnackbar(
@@ -219,6 +298,10 @@ class ProfilePage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _checkIsEmpty(value) {
+    return value == null || value == '';
   }
 
   GetBuilder<DropDownController> genderDropDownMenu() {
@@ -266,7 +349,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  _handleNullValues(String? value, String candValue) {
+  String _handleNullValues(String? value, String candValue) {
     if (value == null || value == '') {
       return candValue;
     } else {

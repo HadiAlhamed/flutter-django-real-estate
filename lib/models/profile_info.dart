@@ -78,7 +78,7 @@ class ProfileInfo {
       birthDate: DateTime.parse(map['birth_date'] as String),
       country: map['country'] as String,
       phoneNumber: map['phone_number'] as String,
-      points: map['points'] as int,
+      points: map['points'],
       isSeller: map['is_seller'] as bool,
     );
   }

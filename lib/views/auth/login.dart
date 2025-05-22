@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/login_controller.dart';
+import 'package:real_estate/controllers/profile_controller.dart';
+import 'package:real_estate/models/profile_info.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
@@ -14,6 +16,7 @@ class Login extends StatelessWidget {
   final LoginController loginController = Get.find<LoginController>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final ProfileController profileController = Get.find<ProfileController>();
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.sizeOf(context).width;
@@ -162,7 +165,13 @@ class Login extends StatelessWidget {
         password: passwordController.text,
       );
       if (result) {
-        Get.offNamed('/home');
+        ProfileInfo? userInfo = await AuthApis.getProfile();
+        if (userInfo != null) {
+          profileController.changeCurrentUserInfo(userInfo);
+          Get.offNamed('/home');
+        } else {
+          Get.toNamed('/profilePage', arguments: {'isNew': true});
+        }
       } else {
         Get.showSnackbar(
           MySnackbar(

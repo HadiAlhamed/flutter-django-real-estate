@@ -1,12 +1,19 @@
+import 'dart:io';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/controllers/drop_down_controller.dart';
+import 'package:real_estate/controllers/profile_controller.dart';
+import 'package:real_estate/services/api.dart';
+import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
 import 'package:real_estate/widgets/my_input_field.dart';
 import 'package:intl/intl.dart';
+import 'package:real_estate/widgets/my_snackbar.dart';
 
 class ProfilePage extends StatelessWidget {
   final TextEditingController firstNameController = TextEditingController();
@@ -16,11 +23,15 @@ class ProfilePage extends StatelessWidget {
   final TextEditingController countryController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final DropDownController dropDownController = Get.find<DropDownController>();
+  final ProfileController profileController = Get.find<ProfileController>();
+  final ImagePicker imagePicker = ImagePicker();
 
+  XFile? profilePhoto;
   ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.sizeOf(context).width;
     emailController.text = 'example@gmail.com';
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 238, 235, 235),
@@ -40,18 +51,37 @@ class ProfilePage extends StatelessWidget {
               const Divider(
                 thickness: 2,
               ),
-              const CircleAvatar(
-                radius: 50,
-                backgroundImage:
-                    AssetImage('assets/images/Aqari_logo_primary_towers.png'),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Icon(
-                    Icons.auto_fix_high,
-                    color: primaryColor,
-                    size: 25,
-                  ),
-                ),
+              GetBuilder<ProfileController>(
+                init: profileController,
+                id: "profilePhoto",
+                builder: (controller) {
+                  return CircleAvatar(
+                    radius: screenWidth * 0.3,
+                    backgroundImage: profileController.profilePhoto != null
+                        ? FileImage(
+                            File(profilePhoto!.path),
+                          )
+                        : const AssetImage(
+                            'assets/images/Aqari_logo_primary_towers.png'),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: IconButton(
+                        onPressed: () async {
+                          profilePhoto = await imagePicker.pickImage(
+                              source: ImageSource.gallery);
+                          if (profilePhoto != null) {
+                            profileController.changeProfilePhoto(profilePhoto!);
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.auto_fix_high,
+                          color: primaryColor,
+                          size: 25,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 height: 20,
@@ -79,7 +109,7 @@ class ProfilePage extends StatelessWidget {
                     );
                     if (chosenBirthDate != null) {
                       String formatedDate =
-                          DateFormat('dd/MM/yyyy').format(chosenBirthDate);
+                          DateFormat('yyyy-MM-dd').format(chosenBirthDate);
                       birthDateController.text = formatedDate;
                     }
                   },
@@ -138,7 +168,33 @@ class ProfilePage extends StatelessWidget {
                   },
                 ),
               ),
-              const MyButton(title: 'Update'),
+              MyButton(
+                title: 'Update',
+                onPressed: () async {
+                  bool result = await AuthApis.updateProfile(
+                    firstName: firstNameController.text.trim(),
+                    lastName: lastNameController.text.trim(),
+                    bdate: birthDateController.text.trim(),
+                    country: countryController.text,
+                    phoneNumber: phoneController.text.trim(),
+                    photo: profilePhoto,
+                  );
+                  if (result) {
+                    Api.box.write('firstName', firstNameController.text.trim());
+                    Api.box.write('lastName', lastNameController.text.trim());
+                    Get.back();
+                  } else {
+                    Get.showSnackbar(
+                      MySnackbar(
+                        success: false,
+                        title: 'Updating Profile',
+                        message:
+                            'Failed to update profile info , please try again later.',
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),

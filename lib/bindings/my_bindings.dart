@@ -5,6 +5,7 @@ import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/drop_down_controller.dart';
 import 'package:real_estate/controllers/home_page_tab_controller.dart';
 import 'package:real_estate/controllers/login_controller.dart';
+import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/controllers/property_controller.dart';
 import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/controllers/signup_controller.dart';
@@ -24,5 +25,6 @@ class MyBindings extends Bindings {
     Get.put(AddPropertyController());
     Get.put(PropertyController());
     Get.put(PropertyDetailsController());
+    Get.put(ProfileController());
   }
 }

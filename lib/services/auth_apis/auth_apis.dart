@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/services/api.dart';
 import 'package:real_estate/services/auth_services/auth_interceptor.dart';
 import 'package:real_estate/services/auth_services/token_service.dart';
@@ -250,5 +251,58 @@ class AuthApis {
       print("Network Error : $e");
       return false;
     }
+  }
+
+  static Future<bool> updateProfile({
+    String? firstName,
+    String? lastName,
+    String? gender,
+    String? bdate,
+    String? country,
+    String? phoneNumber,
+    XFile? photo, // use File for images
+  }) async {
+    print("Trying to update profile info");
+    print(firstName);
+    try {
+      final formData = FormData.fromMap({
+        if (firstName != null) 'first_name': firstName,
+        if (lastName != null) 'last_name': lastName,
+        if (bdate != null) 'birth_date': bdate, // check format: 'YYYY-MM-DD'
+        if (country != null) 'country': country,
+        if (phoneNumber != null) 'phone_number': phoneNumber,
+        if (gender != null) 'gender': gender,
+        if (photo != null)
+          'photo': await _handleImage(photo),
+      });
+
+      final response = await _dio.patch(
+        "${Api.baseUrl}/users/profile/",
+        data: formData,
+      );
+
+      print('✅ Response: ${response.data}');
+      return response.statusCode == 200;
+    } catch (e) {
+      if (e is DioException) {
+        print("❌ Dio error ${e.response?.statusCode}");
+        print(
+            "❌ Dio error data: ${e.response?.data}"); // 👈 This shows you the backend error
+      } else {
+        print("❌ General error: $e");
+      }
+      return false;
+    }
+  }
+
+  static Future<MultipartFile> _handleImage(XFile photo) async {
+    final bytes = await photo.readAsBytes();
+
+    // Prepare MultipartFile from bytes
+    final multipartImage = MultipartFile.fromBytes(
+      bytes,
+      filename: photo.name,
+    );
+    return multipartImage;
   }
 }

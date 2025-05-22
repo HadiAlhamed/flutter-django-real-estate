@@ -135,7 +135,9 @@ class AccountPage extends StatelessWidget {
           leading: const Icon(Icons.person_2_outlined),
           title: const Text("Profile", style: h4TitleStyleBlack),
           trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
-          onTap: () {},
+          onTap: () {
+            Get.toNamed('/profilePage');
+          },
         ),
         const SizedBox(height: 10),
         ListTile(

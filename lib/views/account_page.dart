@@ -5,6 +5,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
+import 'package:real_estate/controllers/theme_controller.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -18,6 +19,7 @@ class AccountPage extends StatelessWidget {
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
   final ProfileController profileController = Get.find<ProfileController>();
+  final ThemeController themeController = Get.find<ThemeController>();
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.sizeOf(context).height;
@@ -38,8 +40,11 @@ class AccountPage extends StatelessWidget {
                   builder: (controller) => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Text(
-                        accountController.isSeller ? "Selling" : "Buying",
-                        style: h2TitleStyleBlack),
+                      accountController.isSeller ? "Selling" : "Buying",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontSize: 20,
+                          ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -47,14 +52,13 @@ class AccountPage extends StatelessWidget {
               ],
             ),
           ),
-          getSellerModeSwitch(screenHeight)
+          getSellerModeSwitch(screenHeight, context)
         ],
       ),
       bottomNavigationBar: GetBuilder<BottomNavigationBarController>(
         init: bottomController,
         builder: (controller) {
           return MyBottomNavigationBar(
-            selectedIndex: bottomController.selectedIndex,
             bottomController: bottomController,
           );
         },
@@ -62,7 +66,9 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  Positioned getSellerModeSwitch(double screenHeight) {
+  Positioned getSellerModeSwitch(double screenHeight, BuildContext context) {
+    // Theme.of(context).
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
     return Positioned(
       top: 0.2 * screenHeight - 0.5 * (0.08 * screenHeight),
       left: 20,
@@ -72,13 +78,13 @@ class AccountPage extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Colors.white,
+          color: !isDark ?  Colors.white : Colors.grey,
         ),
         child: GetBuilder<AccountPageController>(
           id: 'sellerMode',
           init: accountController,
           builder: (controller) => ListTile(
-            title: const Text("Seller Mode", style: h2TitleStyleBlack),
+            title:  Text("Seller Mode", style: isDark ? h2TitleStyleWhite : h2TitleStyleBlack,),
             trailing: getSwitch(
               onChanged: (value) async {
                 bool result = await AuthApis.changeIsSeller(value);
@@ -140,7 +146,9 @@ class AccountPage extends StatelessWidget {
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.calendar_month),
-          title: const Text("My Booking", style: h4TitleStyleBlack),
+          title: const Text(
+            "My Booking",
+          ),
           trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
           onTap: () {},
         ),
@@ -148,7 +156,7 @@ class AccountPage extends StatelessWidget {
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.person_2_outlined),
-          title: const Text("Profile", style: h4TitleStyleBlack),
+          title: const Text("Profile"),
           trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
           onTap: () {
             Get.toNamed('/profilePage');
@@ -158,7 +166,9 @@ class AccountPage extends StatelessWidget {
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.notifications),
-          title: const Text("Notifications", style: h4TitleStyleBlack),
+          title: const Text(
+            "Notifications",
+          ),
           trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
           onTap: () {},
         ),
@@ -192,19 +202,20 @@ class AccountPage extends StatelessWidget {
     }
   }
 
-  GetBuilder<AccountPageController> darkModeSwitch() {
-    return GetBuilder<AccountPageController>(
-      id: "darkMode",
-      init: accountController,
-      builder: (controller) => ListTile(
+  Obx darkModeSwitch() {
+    return Obx(
+      () => ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
         leading: const Icon(Icons.dark_mode_outlined),
-        title: const Text("Dark Mode", style: h4TitleStyleBlack),
+        title: const Text(
+          "Dark Mode",
+        ),
         trailing: getSwitch(
-            onChanged: (value) {
-              accountController.changeIsDark(value);
-            },
-            switchValue: accountController.isDark),
+          onChanged: (value) async {
+            await themeController.toggleTheme();
+          },
+          switchValue: themeController.themeMode.value == ThemeMode.dark,
+        ),
       ),
     );
   }

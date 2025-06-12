@@ -5,12 +5,13 @@ class BottomNavigationBarController extends GetxController {
   bool isSeller = false;
   void changeSelectedIndex({required int index}) {
     selectedIndex = index;
+
     update();
   }
 
   void changeIsSeller(bool value) {
     isSeller = value;
-    value ? selectedIndex++ : selectedIndex--;
+    value ? selectedIndex = 4 : selectedIndex = 3;
     update();
   }
 

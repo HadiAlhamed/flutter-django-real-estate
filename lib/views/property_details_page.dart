@@ -127,7 +127,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
                           const EdgeInsets.only(top: 8.0, left: 8, right: 8),
                       child: Text(
                         "${pdController.propertyDetails!.price.toString()} \$",
-                        style: h1TitleStyleBlack,
+                   
                       ),
                     ),
                     const Divider(),
@@ -179,7 +179,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
         children: [
           Icon(Icons.gps_fixed),
           SizedBox(width: 10),
-          Text("Location", style: h3TitleStyleBlack),
+          Text("Location",),
         ],
       ),
     );
@@ -235,14 +235,11 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
         children: [
           const Text(
             "Property Details",
-            style: h2TitleStyleBlack,
           ),
           const SizedBox(height: 15),
           Text(
             "a ${pdController.propertyDetails!.area.toString()} squared meters ${pdController.propertyDetails!.propertyType} ${pdController.propertyDetails!.facilities.isEmpty ? "" : getFacilities()}.",
-            style: h4TitleStyleBlack.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
+           
           ),
         ],
       ),
@@ -255,8 +252,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
       child: Column(
         children: [
           Text(
-              "${pdController.propertyDetails!.propertyType} in ${pdController.propertyDetails!.city} ${pdController.propertyDetails!.details ?? ""}",
-              style: h3TitleStyleBlack),
+              "${pdController.propertyDetails!.propertyType} in ${pdController.propertyDetails!.city} ${pdController.propertyDetails!.details ?? ""}"),
           const SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

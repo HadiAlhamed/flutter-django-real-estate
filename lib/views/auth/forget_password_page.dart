@@ -102,38 +102,45 @@ class ForgetPasswordPage extends StatelessWidget {
             ),
           ),
         ),
-        MyButton(
-          title: "Continue",
-          onPressed: () async {
-            if (passwordController.text != cpasswordController.text) {
-              Get.showSnackbar(
-                MySnackbar(
-                  success: false,
-                  title: "New Password",
-                  message: 'Passwords does not match',
-                ),
+        GetBuilder<ForgetPasswordController>(
+          init: fpController,
+          id: "loading",
+          builder: (controller) => MyButton(
+            title: fpController.isLoading ? null : "Continue",
+            onPressed: () async {
+              if (passwordController.text != cpasswordController.text) {
+                Get.showSnackbar(
+                  MySnackbar(
+                    success: false,
+                    title: "New Password",
+                    message: 'Passwords does not match',
+                  ),
+                );
+                return;
+              }
+              fpController.changeIsLoading(true);
+              bool result = await AuthApis.setNewPassword(
+                email: fpController.email,
+                code: fpController.code,
+                newPassword: passwordController.text,
               );
-              return;
-            }
-            bool result = await AuthApis.setNewPassword(
-              email: fpController.email,
-              code: fpController.code,
-              newPassword: passwordController.text,
-            );
-            if (result) {
-              fpController.clear();
-              Get.offAllNamed('/login');
-            } else {
-              Get.showSnackbar(
-                MySnackbar(
-                  success: false,
-                  title: 'Update Password',
-                  message:
-                      'Failed to update new password please try again later.',
-                ),
-              );
-            }
-          },
+              fpController.changeIsLoading(false);
+
+              if (result) {
+                fpController.clear();
+                Get.offAllNamed('/login');
+              } else {
+                Get.showSnackbar(
+                  MySnackbar(
+                    success: false,
+                    title: 'Update Password',
+                    message:
+                        'Failed to update new password please try again later.',
+                  ),
+                );
+              }
+            },
+          ),
         ),
       ],
     );
@@ -173,26 +180,33 @@ class ForgetPasswordPage extends StatelessWidget {
           },
         ),
         const SizedBox(height: 20),
-        MyButton(
-          title: 'Verify',
-          onPressed: () async {
-            bool result = await AuthApis.verifyCode(
-              email: fpController.email,
-              code: fpController.code,
-              purpose: 'password_reset',
-            );
-            if (result) {
-              fpController.changeCodeFlag(true);
-            } else {
-              Get.showSnackbar(
-                MySnackbar(
-                    success: false,
-                    title: "Verify Code",
-                    message:
-                        'Failed to verify the code , please make sure you are using the right code and try again later.'),
+        GetBuilder(
+          init: fpController,
+          id: "loading",
+          builder: (controller) => MyButton(
+            title: fpController.isLoading ? null : 'Verify',
+            onPressed: () async {
+              fpController.changeIsLoading(true);
+              bool result = await AuthApis.verifyCode(
+                email: fpController.email,
+                code: fpController.code,
+                purpose: 'password_reset',
               );
-            }
-          },
+              fpController.changeIsLoading(false);
+
+              if (result) {
+                fpController.changeCodeFlag(true);
+              } else {
+                Get.showSnackbar(
+                  MySnackbar(
+                      success: false,
+                      title: "Verify Code",
+                      message:
+                          'Failed to verify the code , please make sure you are using the right code and try again later.'),
+                );
+              }
+            },
+          ),
         ),
       ],
     );
@@ -210,37 +224,43 @@ class ForgetPasswordPage extends StatelessWidget {
           hint: 'Email',
           controller: emailController,
         ),
-        MyButton(
-          title: 'Continue',
-          onPressed: () async {
-            if (emailController.text == '') {
-              //later add a snackbar telling the user to give an email
-              Get.showSnackbar(
-                MySnackbar(
-                  success: false,
-                  title: 'Email',
-                  message: "Enter your email please",
-                ),
-              );
-              return;
-            }
-            //store the email for the post api
-
-            fpController.emailValue = emailController.text.trim();
-            bool result = await AuthApis.resendActivationCode(
-                email: emailController.text.trim());
-            if (result) {
-              fpController.changeEmailFlag(true);
-            } else {
-              Get.showSnackbar(
-                MySnackbar(
+        GetBuilder<ForgetPasswordController>(
+          init: fpController,
+          id: 'loading',
+          builder: (controller) => MyButton(
+            title: fpController.isLoading ? null : 'Continue',
+            onPressed: () async {
+              if (emailController.text == '') {
+                //later add a snackbar telling the user to give an email
+                Get.showSnackbar(
+                  MySnackbar(
                     success: false,
-                    title: "Code Verification",
-                    message:
-                        'Failed to send a code verification to your email , please try again later'),
-              );
-            }
-          },
+                    title: 'Email',
+                    message: "Enter your email please",
+                  ),
+                );
+                return;
+              }
+              //store the email for the post api
+
+              fpController.emailValue = emailController.text.trim();
+              fpController.changeIsLoading(true);
+              bool result = await AuthApis.resendActivationCode(
+                  email: emailController.text.trim());
+              fpController.changeIsLoading(false);
+              if (result) {
+                fpController.changeEmailFlag(true);
+              } else {
+                Get.showSnackbar(
+                  MySnackbar(
+                      success: false,
+                      title: "Code Verification",
+                      message:
+                          'Failed to send a code verification to your email , please try again later'),
+                );
+              }
+            },
+          ),
         ),
       ],
     );

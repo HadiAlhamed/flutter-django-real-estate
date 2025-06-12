@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/controllers/drop_down_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
-import 'package:real_estate/services/api.dart';
+import 'package:real_estate/models/profile_info.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -36,12 +36,11 @@ class ProfilePage extends StatelessWidget {
 
     emailController.text = 'example@gmail.com';
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 238, 235, 235),
       appBar: AppBar(
         elevation: 4,
         title: const Text(
           "Profile",
-          style: h2TitleStyleBlack,
+          
         ),
       ),
       body: SingleChildScrollView(
@@ -244,7 +243,7 @@ class ProfilePage extends StatelessWidget {
                     }
                   }
                   print("all entered.....");
-                  bool result = await AuthApis.updateProfile(
+                  ProfileInfo? result = await AuthApis.updateProfile(
                     firstName: _handleNullValues(
                       firstNameController.text.trim(),
                       profileController.currentUserInfo?.firstName ?? 'Guest',
@@ -275,7 +274,9 @@ class ProfilePage extends StatelessWidget {
                     ),
                   );
                   print("got updating profile info result");
-                  if (result) {
+                  if (result != null) {
+                    profileController.changeCurrentUserInfo(result);
+
                     if (isNew) {
                       Get.offAllNamed('/home');
                     } else {
@@ -323,7 +324,6 @@ class ProfilePage extends StatelessWidget {
           child: DropdownButtonFormField(
             value: dropDownController.selectedGender,
             decoration: InputDecoration(
-              fillColor: Colors.white,
               filled: true,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(15),

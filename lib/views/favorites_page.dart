@@ -44,7 +44,7 @@ class FavoritesPage extends StatelessWidget {
         init: bottomController,
         builder: (controller) {
           return MyBottomNavigationBar(
-            selectedIndex: bottomController.selectedIndex,
+            
             bottomController: bottomController,
           );
         },

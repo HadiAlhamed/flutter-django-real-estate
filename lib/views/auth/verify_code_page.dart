@@ -53,7 +53,7 @@ class VerifyCodePage extends StatelessWidget {
               activeFillColor: Colors.white,
               inactiveColor: primaryColor,
             ),
-            animationDuration: Duration(milliseconds: 300),
+            animationDuration: const Duration(milliseconds: 300),
             onCompleted: (v) {
               print("Completed: $v");
               code = v;
@@ -98,6 +98,7 @@ class VerifyCodePage extends StatelessWidget {
                 code: code,
                 purpose: 'activation',
               );
+              print("verifing code result : $result");
               if (result) {
                 Get.showSnackbar(
                   MySnackbar(

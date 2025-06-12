@@ -10,6 +10,7 @@ import 'package:real_estate/controllers/property_controller.dart';
 import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/controllers/signup_controller.dart';
 import 'package:real_estate/controllers/forget_password_controller.dart';
+import 'package:real_estate/controllers/theme_controller.dart';
 
 class MyBindings extends Bindings {
   @override
@@ -26,5 +27,6 @@ class MyBindings extends Bindings {
     Get.put(PropertyController());
     Get.put(PropertyDetailsController());
     Get.put(ProfileController());
+    Get.put(ThemeController());
   }
 }

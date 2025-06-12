@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/controllers/property_controller.dart';
+import 'package:real_estate/controllers/theme_controller.dart';
 import 'package:real_estate/models/paginated_property.dart';
 import 'package:real_estate/models/profile_info.dart';
 import 'package:real_estate/models/property.dart';
@@ -27,6 +28,8 @@ class _HomePageState extends State<HomePage>
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
   final ProfileController profileController = Get.find<ProfileController>();
+  
+  final ThemeController themeController = Get.find<ThemeController>();
   late TabController _tabController;
   @override
   void initState() {
@@ -72,29 +75,33 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 245, 243, 243),
+        // backgroundColor: const Color.fromARGB(255, 245, 243, 243),
         elevation: 0,
-        leading: const Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: CircleAvatar(
-            child: Icon(Icons.person),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: GetBuilder<ProfileController>(
+            id : "profilePhoto",
+            init : profileController,
+            builder : (controller)=> CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(
+                profileController.currentUserInfo!.profilePhoto,
+              ),
+            ),
           ),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Welcome",
-              style: h4TitleStyleGrey.copyWith(
-                fontSize: 20,
-              ),
             ),
             GetBuilder<ProfileController>(
               init: profileController,
               id: 'fullName',
               builder: (controller) => Text(
                   "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
-                  style: h2TitleStyleBlack),
+                ),
             ),
           ],
         ),
@@ -107,9 +114,9 @@ class _HomePageState extends State<HomePage>
             searchBarWidget(),
             TabBar(
               controller: _tabController,
-              labelColor: Colors.black,
-              unselectedLabelColor: Colors.grey,
-              indicatorColor: Colors.blue,
+              // labelColor: Colors.black,
+              // unselectedLabelColor: Colors.grey,
+              // indicatorColor: Colors.blue,
               isScrollable: true,
               tabs: tabs.map((tab) => Tab(text: tab)).toList(),
             ),
@@ -126,7 +133,7 @@ class _HomePageState extends State<HomePage>
         init: bottomController,
         builder: (controller) {
           return MyBottomNavigationBar(
-            selectedIndex: bottomController.selectedIndex,
+            
             bottomController: bottomController,
           );
         },

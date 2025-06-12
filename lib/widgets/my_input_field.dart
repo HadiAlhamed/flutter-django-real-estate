@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:real_estate/textstyles/text_colors.dart';
+import 'package:real_estate/textstyles/text_styles.dart';
 
 class MyInputField extends StatelessWidget {
   final String hint;
@@ -46,9 +47,10 @@ class MyInputField extends StatelessWidget {
         controller: controller,
         obscureText: isObsecure ?? false,
         keyboardType: keyboardType,
+        // style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.white,
+          
           suffixIcon: suffixWidget,
           hintText: hint,
           prefixIcon: prefixWidget ??

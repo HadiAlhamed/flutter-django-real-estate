@@ -29,6 +29,10 @@ class Login extends StatelessWidget {
           child: Column(
             children: [
               Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(50),
+                ),
                 margin: EdgeInsets.only(top: screenHeight * 0.2, bottom: 20),
                 height: 200,
                 child: Image.asset(
@@ -166,6 +170,7 @@ class Login extends StatelessWidget {
       );
       if (result) {
         ProfileInfo? userInfo = await AuthApis.getProfile();
+        loginController.clear();
         if (userInfo != null) {
           profileController.changeCurrentUserInfo(userInfo);
           Get.offNamed('/home');

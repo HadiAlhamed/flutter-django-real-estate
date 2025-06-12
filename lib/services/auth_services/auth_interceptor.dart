@@ -14,6 +14,7 @@ class AuthInterceptor extends Interceptor {
     print("Access token is : $token");
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';
+      options.headers['Content-Type'] = 'application/json';
     }
     return handler.next(options);
   }
@@ -29,6 +30,7 @@ class AuthInterceptor extends Interceptor {
         // Retry original request with new token
         final retryRequest = err.requestOptions;
         retryRequest.headers['Authorization'] = 'Bearer $newToken';
+        retryRequest.headers['Content-Type'] = 'application/json';
 
         final response = await dio.fetch(retryRequest);
         return handler.resolve(response);

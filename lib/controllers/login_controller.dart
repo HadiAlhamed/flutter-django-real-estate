@@ -32,5 +32,6 @@ class LoginController extends GetxController {
   void clear() {
     isLoading = false;
     hidePassword = true;
+    update(['password']);
   }
 }

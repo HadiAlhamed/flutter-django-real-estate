@@ -81,10 +81,8 @@ class AddPropertyPage extends StatelessWidget {
     final double screenWidth = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text("Add Property", style: h2TitleStyleBlack),
+        title: const Text("Add Property"),
         elevation: 2,
       ),
       body: SingleChildScrollView(
@@ -207,7 +205,7 @@ class AddPropertyPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: MyBottomNavigationBar(
-        selectedIndex: bottomController.selectedIndex,
+        
         bottomController: bottomController,
       ),
     );
@@ -417,7 +415,6 @@ class AddPropertyPage extends StatelessWidget {
           return null;
         },
         decoration: InputDecoration(
-          fillColor: Colors.white,
           filled: true,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(15),

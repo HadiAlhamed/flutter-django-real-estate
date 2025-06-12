@@ -6,12 +6,10 @@ import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
-  final int selectedIndex;
   final BottomNavigationBarController bottomController;
 
   const MyBottomNavigationBar({
     super.key,
-    required this.selectedIndex,
     required this.bottomController,
   });
 
@@ -20,7 +18,7 @@ class MyBottomNavigationBar extends StatelessWidget {
     return GetBuilder<BottomNavigationBarController>(
       init: bottomController,
       builder: (controller) => BottomNavigationBar(
-        currentIndex: selectedIndex,
+        currentIndex: bottomController.selectedIndex,
         selectedItemColor: primaryColor,
         selectedLabelStyle: h4TitleStylePrimary,
         unselectedItemColor: greyText,

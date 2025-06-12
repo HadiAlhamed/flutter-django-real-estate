@@ -7,10 +7,17 @@ class ForgetPasswordController extends GetxController {
   String code = '';
   bool hidePassword = true;
   bool hideCpassword = true;
+  bool isLoading = false;
   void flipHidePassword() {
     hidePassword = !hidePassword;
     update(['password']);
   }
+
+  void changeIsLoading(bool value) {
+    isLoading = value;
+    update(['loading']);
+  }
+
   void flipHideCpassword() {
     hideCpassword = !hideCpassword;
     update(['cpassword']);
@@ -35,5 +42,7 @@ class ForgetPasswordController extends GetxController {
     code = '';
     emailEntered = false;
     codeVerified = false;
+    isLoading = false;
+    update(['password', 'cpassword']);
   }
 }

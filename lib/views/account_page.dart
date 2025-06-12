@@ -111,9 +111,15 @@ class AccountPage extends StatelessWidget {
       height: 0.2 * screenHeight,
       child: ListTile(
         contentPadding: const EdgeInsets.only(top: 60, left: 10, right: 8),
-        leading: const CircleAvatar(
-          radius: 25,
-          backgroundImage: AssetImage('assets/images/person.jpg'),
+        leading: GetBuilder<ProfileController>(
+          id: "profilePhoto",
+          init: profileController,
+          builder: (controller) => CircleAvatar(
+            radius: 25,
+            backgroundImage: NetworkImage(
+              profileController.currentUserInfo!.profilePhoto,
+            ),
+          ),
         ),
         title: GetBuilder<ProfileController>(
           init: profileController,

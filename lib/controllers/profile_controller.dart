@@ -13,6 +13,6 @@ class ProfileController extends GetxController {
   void changeCurrentUserInfo(ProfileInfo profileInfo) {
     currentUserInfo = profileInfo;
     //update what need to be updated...
-    update(['fullName']);
+    update(['fullName' , 'profilePhoto']);
   }
 }

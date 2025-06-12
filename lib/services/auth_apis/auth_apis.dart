@@ -71,7 +71,7 @@ class AuthApis {
     required String code,
     required String purpose,
   }) async {
-    print("Email : $email \nCode : $code");
+    print("Email : $email \nCode : $code\nPurpose : $purpose");
     try {
       final response = await _dio.post(
         "${Api.baseUrl}/users/verify-code/",
@@ -81,7 +81,9 @@ class AuthApis {
           'purpose': purpose,
         },
       );
-
+      print("Hi verifyCode");
+      print(response.statusCode);
+      print(response.statusMessage);
       print(response.data);
 
       if (response.statusCode == 200) {
@@ -97,6 +99,9 @@ class AuthApis {
 
       return false;
     } catch (e) {
+      if (e is DioException) {
+        print(e.response?.data);
+      }
       print("Network Error : $e");
       return false;
     }
@@ -254,7 +259,7 @@ class AuthApis {
     }
   }
 
-  static Future<bool> updateProfile({
+  static Future<ProfileInfo?> updateProfile({
     String? firstName,
     String? lastName,
     String? gender,
@@ -282,7 +287,9 @@ class AuthApis {
       );
 
       print('✅ Response: ${response.data}');
-      return response.statusCode == 200;
+      if (response.statusCode == 200) {
+        return ProfileInfo.fromJson(response.data);
+      }
     } catch (e) {
       if (e is DioException) {
         print("❌ Dio error ${e.response?.statusCode}");
@@ -291,8 +298,8 @@ class AuthApis {
       } else {
         print("❌ General error: $e");
       }
-      return false;
     }
+    return null;
   }
 
   static Future<ProfileInfo?> getProfile() async {

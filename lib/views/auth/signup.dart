@@ -30,6 +30,10 @@ class Signup extends StatelessWidget {
           child: Column(
             children: [
               Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(50),
+                ),
                 margin: EdgeInsets.only(top: screenHeight * 0.2, bottom: 20),
                 height: 200,
                 child: Image.asset(

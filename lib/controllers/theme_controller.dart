@@ -6,7 +6,7 @@ class ThemeController extends GetxController {
   // Observable to track theme mode
   Rx<ThemeMode> themeMode = ThemeMode.light.obs;
   Future<void> init() async {
-    bool? isDark = Api.box.read('isDark');
+    bool? isDark =  Api.box.read('isDark');
     if (isDark == null || !isDark) {
       themeMode = ThemeMode.light.obs;
     }else{

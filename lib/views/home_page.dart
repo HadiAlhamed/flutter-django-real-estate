@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage>
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
   final ProfileController profileController = Get.find<ProfileController>();
-  
+
   final ThemeController themeController = Get.find<ThemeController>();
   late TabController _tabController;
   @override
@@ -80,9 +80,9 @@ class _HomePageState extends State<HomePage>
         leading: Padding(
           padding: const EdgeInsets.only(left: 8.0),
           child: GetBuilder<ProfileController>(
-            id : "profilePhoto",
-            init : profileController,
-            builder : (controller)=> CircleAvatar(
+            id: "profilePhoto",
+            init: profileController,
+            builder: (controller) => CircleAvatar(
               radius: 25,
               backgroundImage: NetworkImage(
                 profileController.currentUserInfo!.profilePhoto,
@@ -100,8 +100,8 @@ class _HomePageState extends State<HomePage>
               init: profileController,
               id: 'fullName',
               builder: (controller) => Text(
-                  "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
-                ),
+                "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
+              ),
             ),
           ],
         ),
@@ -133,7 +133,6 @@ class _HomePageState extends State<HomePage>
         init: bottomController,
         builder: (controller) {
           return MyBottomNavigationBar(
-            
             bottomController: bottomController,
           );
         },
@@ -222,7 +221,7 @@ class _HomePageState extends State<HomePage>
       child: TextField(
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colors.white,
+          // fillColor: Colors.white,
           hintText: "Search",
           hintStyle: h4TitleStyleGrey,
           contentPadding: const EdgeInsets.all(18),
@@ -239,7 +238,9 @@ class _HomePageState extends State<HomePage>
             icon: const Icon(Icons.search, color: greyText),
           ),
           suffixIcon: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed("/filterSearchPage");
+            },
             icon: const Icon(Icons.filter_alt_outlined, color: greyText),
           ),
         ),

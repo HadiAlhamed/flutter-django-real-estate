@@ -13,6 +13,7 @@ import 'package:real_estate/views/auth/login.dart';
 import 'package:real_estate/views/auth/signup.dart';
 import 'package:real_estate/views/auth/verify_code_page.dart';
 import 'package:real_estate/views/favorites_page.dart';
+import 'package:real_estate/views/filter_search_page.dart';
 import 'package:real_estate/views/home_page.dart';
 import 'package:real_estate/views/maps/open_street_map_with_gps.dart';
 import 'package:real_estate/views/profile_page.dart';
@@ -50,6 +51,12 @@ class MyApp extends StatelessWidget {
               transition: Transition.fade,
               transitionDuration: const Duration(milliseconds: 300),
             ),
+            GetPage(
+              name: '/filterSearchPage',
+              page: () => FilterSearchPage(),
+              transition: Transition.fade,
+              transitionDuration: const Duration(milliseconds: 300),
+          ),
             GetPage(
               name: '/verifyCodePage',
               page: () => const VerifyCodePage(),

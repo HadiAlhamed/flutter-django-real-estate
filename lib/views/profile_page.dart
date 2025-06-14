@@ -9,7 +9,6 @@ import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/models/profile_info.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
-import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
 import 'package:real_estate/widgets/my_input_field.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +39,6 @@ class ProfilePage extends StatelessWidget {
         elevation: 4,
         title: const Text(
           "Profile",
-          
         ),
       ),
       body: SingleChildScrollView(
@@ -169,131 +167,138 @@ class ProfilePage extends StatelessWidget {
                   },
                 ),
               ),
-              MyButton(
-                title: 'Update',
-                onPressed: () async {
-                  if (isNew) {
-                    if (profilePhoto == null) {
-                      Get.showSnackbar(
-                        MySnackbar(
-                            success: false,
-                            title: 'Missing Info',
-                            message: "Please enter your profile picture"),
-                      );
-                      return;
-                    }
-                    if (_checkIsEmpty(firstNameController.text.trim())) {
-                      Get.showSnackbar(
-                        MySnackbar(
-                            success: false,
-                            title: 'Missing Info',
-                            message: "Please enter your first name"),
-                      );
-                      return;
-                    }
-
-                    if (_checkIsEmpty(lastNameController.text.trim())) {
-                      Get.showSnackbar(
-                        MySnackbar(
-                            success: false,
-                            title: 'Missing Info',
-                            message: "Please enter your last name"),
-                      );
-                      return;
-                    }
-
-                    if (_checkIsEmpty(countryController.text.trim())) {
-                      Get.showSnackbar(
-                        MySnackbar(
-                            success: false,
-                            title: 'Missing Info',
-                            message: "Please enter your country"),
-                      );
-                      return;
-                    }
-
-                    if (_checkIsEmpty(birthDateController.text.trim())) {
-                      Get.showSnackbar(
-                        MySnackbar(
-                            success: false,
-                            title: 'Missing Info',
-                            message: "Please enter your birth date"),
-                      );
-                      return;
-                    }
-
-                    if (_checkIsEmpty(dropDownController.selectedGender)) {
-                      Get.showSnackbar(
-                        MySnackbar(
-                            success: false,
-                            title: 'Missing Info',
-                            message: "Please enter your gender"),
-                      );
-                      return;
-                    }
-
-                    if (_checkIsEmpty(phoneController.text.trim())) {
-                      Get.showSnackbar(
-                        MySnackbar(
-                            success: false,
-                            title: 'Missing Info',
-                            message: "Please enter your phone number"),
-                      );
-                      return;
-                    }
-                  }
-                  print("all entered.....");
-                  ProfileInfo? result = await AuthApis.updateProfile(
-                    firstName: _handleNullValues(
-                      firstNameController.text.trim(),
-                      profileController.currentUserInfo?.firstName ?? 'Guest',
-                    ),
-                    lastName: _handleNullValues(
-                      lastNameController.text.trim(),
-                      profileController.currentUserInfo?.lastName ?? 'User',
-                    ),
-                    bdate: _handleNullValues(
-                      birthDateController.text.trim(),
-                      DateFormat('yyyy-MM-dd').format(
-                          profileController.currentUserInfo?.birthDate ??
-                              DateTime(2025)),
-                    ),
-                    country: _handleNullValues(
-                      countryController.text.trim(),
-                      profileController.currentUserInfo?.country ?? 'Syria',
-                    ),
-                    phoneNumber: _handleNullValues(
-                      phoneController.text.trim(),
-                      profileController.currentUserInfo?.phoneNumber ??
-                          '000000000',
-                    ),
-                    photo: profilePhoto ?? profileController.profilePhoto,
-                    gender: _handleNullValues(
-                      dropDownController.selectedGender[0],
-                      profileController.currentUserInfo?.gender ?? 'M',
-                    ),
-                  );
-                  print("got updating profile info result");
-                  if (result != null) {
-                    profileController.changeCurrentUserInfo(result);
-
+              GetBuilder<ProfileController>(
+                id : "updateProfile",
+                init : profileController,
+                builder : (controller)=> MyButton(
+                  title: profileController.isUpdateLoading ? null : isNew ? 'Submit' : 'Update',
+                  onPressed: () async {
                     if (isNew) {
-                      Get.offAllNamed('/home');
-                    } else {
-                      Get.back();
+                      if (profilePhoto == null) {
+                        Get.showSnackbar(
+                          MySnackbar(
+                              success: false,
+                              title: 'Missing Info',
+                              message: "Please enter your profile picture"),
+                        );
+                        return;
+                      }
+                      if (_checkIsEmpty(firstNameController.text.trim())) {
+                        Get.showSnackbar(
+                          MySnackbar(
+                              success: false,
+                              title: 'Missing Info',
+                              message: "Please enter your first name"),
+                        );
+                        return;
+                      }
+
+                      if (_checkIsEmpty(lastNameController.text.trim())) {
+                        Get.showSnackbar(
+                          MySnackbar(
+                              success: false,
+                              title: 'Missing Info',
+                              message: "Please enter your last name"),
+                        );
+                        return;
+                      }
+
+                      if (_checkIsEmpty(countryController.text.trim())) {
+                        Get.showSnackbar(
+                          MySnackbar(
+                              success: false,
+                              title: 'Missing Info',
+                              message: "Please enter your country"),
+                        );
+                        return;
+                      }
+
+                      if (_checkIsEmpty(birthDateController.text.trim())) {
+                        Get.showSnackbar(
+                          MySnackbar(
+                              success: false,
+                              title: 'Missing Info',
+                              message: "Please enter your birth date"),
+                        );
+                        return;
+                      }
+
+                      if (_checkIsEmpty(dropDownController.selectedGender)) {
+                        Get.showSnackbar(
+                          MySnackbar(
+                              success: false,
+                              title: 'Missing Info',
+                              message: "Please enter your gender"),
+                        );
+                        return;
+                      }
+
+                      if (_checkIsEmpty(phoneController.text.trim())) {
+                        Get.showSnackbar(
+                          MySnackbar(
+                              success: false,
+                              title: 'Missing Info',
+                              message: "Please enter your phone number"),
+                        );
+                        return;
+                      }
                     }
-                  } else {
-                    Get.showSnackbar(
-                      MySnackbar(
-                        success: false,
-                        title: 'Updating Profile',
-                        message:
-                            'Failed to update profile info , please try again later.',
+                    print("all entered.....");
+                    profileController.changeIsUpdateLoading(true);
+                    ProfileInfo? result = await AuthApis.updateProfile(
+                      firstName: _handleNullValues(
+                        firstNameController.text.trim(),
+                        profileController.currentUserInfo?.firstName ?? 'Guest',
+                      ),
+                      lastName: _handleNullValues(
+                        lastNameController.text.trim(),
+                        profileController.currentUserInfo?.lastName ?? 'User',
+                      ),
+                      bdate: _handleNullValues(
+                        birthDateController.text.trim(),
+                        DateFormat('yyyy-MM-dd').format(
+                            profileController.currentUserInfo?.birthDate ??
+                                DateTime(2025)),
+                      ),
+                      country: _handleNullValues(
+                        countryController.text.trim(),
+                        profileController.currentUserInfo?.country ?? 'Syria',
+                      ),
+                      phoneNumber: _handleNullValues(
+                        phoneController.text.trim(),
+                        profileController.currentUserInfo?.phoneNumber ??
+                            '000000000',
+                      ),
+                      photo: profilePhoto ?? profileController.profilePhoto,
+                      gender: _handleNullValues(
+                        dropDownController.selectedGender[0],
+                        profileController.currentUserInfo?.gender ?? 'M',
                       ),
                     );
-                  }
-                },
-              ),
+                    profileController.changeIsUpdateLoading(false);
+
+                    print("got updating profile info result");
+                    if (result != null) {
+                      profileController.changeCurrentUserInfo(result);
+
+                      if (isNew) {
+                        Get.offAllNamed('/home');
+                      } else {
+                        Get.back();
+                      }
+                    } else {
+                      Get.showSnackbar(
+                        MySnackbar(
+                          success: false,
+                          title: 'Updating Profile',
+                          message:
+                              'Failed to update profile info , please try again later.',
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ) 
             ],
           ),
         ),

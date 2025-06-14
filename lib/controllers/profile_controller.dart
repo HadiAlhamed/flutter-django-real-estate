@@ -5,6 +5,12 @@ import 'package:real_estate/models/profile_info.dart';
 class ProfileController extends GetxController {
   XFile? profilePhoto;
   ProfileInfo? currentUserInfo;
+  bool isUpdateLoading = false;
+  void changeIsUpdateLoading(bool value) {
+    isUpdateLoading = value;
+    update(['updateProfile']);
+  }
+
   void changeProfilePhoto(XFile photo) {
     profilePhoto = photo;
     update(['profilePhoto']);
@@ -14,5 +20,10 @@ class ProfileController extends GetxController {
     currentUserInfo = profileInfo;
     //update what need to be updated...
     update(['fullName' , 'profilePhoto']);
+  }
+  void clear()
+  {
+        isUpdateLoading = false;
+
   }
 }

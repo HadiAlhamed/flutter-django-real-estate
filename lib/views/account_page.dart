@@ -155,6 +155,16 @@ class AccountPage extends StatelessWidget {
         const SizedBox(height: 10),
         ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 10),
+          leading: const Icon(Icons.house),
+          title: const Text(
+            "My Properties",
+          ),
+          trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
+          onTap: () {},
+        ),
+        const SizedBox(height: 10),
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10),
           leading: const Icon(Icons.person_2_outlined),
           title: const Text("Profile"),
           trailing: const Icon(Icons.keyboard_arrow_right, size: 32),

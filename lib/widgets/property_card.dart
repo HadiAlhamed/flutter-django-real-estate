@@ -20,7 +20,7 @@ class PropertyCard extends StatelessWidget {
         Get.toNamed('/propertyDetails', arguments: {'propertyId': property.id!});
       },
       child: Card(
-        color: Colors.white,
+        // color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
@@ -44,7 +44,6 @@ class PropertyCard extends StatelessWidget {
                 children: [
                   Text(
                     "${property.price.toString()} \$",
-                    style: h4TitleStyleBlack,
                   ),
                   const SizedBox(height: 5),
                   Text(

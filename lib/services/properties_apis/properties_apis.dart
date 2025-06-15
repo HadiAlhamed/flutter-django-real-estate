@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:real_estate/models/facility.dart';
+import 'package:real_estate/models/filter_options.dart';
 import 'package:real_estate/models/paginated_property.dart';
 import 'package:real_estate/models/property.dart';
 import 'package:real_estate/models/property_details.dart';
@@ -102,12 +103,12 @@ class PropertiesApis {
     }
   }
 
-  static Future<PaginatedProperty> getProperties({String? url}) async {
+  static Future<PaginatedProperty> getProperties(
+      {String? url, FilterOptions? filterOptions}) async {
     print("trying to get property page : $url");
     try {
-      final response = await _dio.get(
-        url ?? "${Api.baseUrl}/properties/",
-      );
+      final response = await _dio
+          .get(url ?? "${Api.baseUrl}/properties/", queryParameters: filterOptions == null ? {} : filterOptions.toJson(),);
       if (response.statusCode == 200) {
         print("Retrived successfully");
         Map<String, dynamic> data = response.data;

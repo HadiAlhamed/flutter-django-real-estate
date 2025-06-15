@@ -18,6 +18,7 @@ import 'package:real_estate/views/home_page.dart';
 import 'package:real_estate/views/maps/open_street_map_with_gps.dart';
 import 'package:real_estate/views/profile_page.dart';
 import 'package:real_estate/views/property_details_page.dart';
+import 'package:real_estate/views/search_result_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
           initialRoute: '/login',
           initialBinding: MyBindings(),
           getPages: [
+            
             GetPage(
               name: '/login',
               page: () => Login(),
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
             ),
             GetPage(
               name: '/filterSearchPage',
-              page: () => FilterSearchPage(),
+              page: () => const FilterSearchPage(),
               transition: Transition.fade,
               transitionDuration: const Duration(milliseconds: 300),
           ),
@@ -111,6 +113,12 @@ class MyApp extends StatelessWidget {
               transition: Transition.fade,
               transitionDuration: const Duration(milliseconds: 300),
             ),
+            GetPage(
+            name: '/searchResultPage',
+            page: () => const SearchResultPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
             GetPage(
               name: '/openStreetMap',
               page: () => const OpenStreetMapWithGPS(),

@@ -234,7 +234,9 @@ class _HomePageState extends State<HomePage>
             borderSide: BorderSide.none,
           ),
           prefixIcon: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.toNamed("/searchResultPage");
+            },
             icon: const Icon(Icons.search, color: greyText),
           ),
           suffixIcon: IconButton(

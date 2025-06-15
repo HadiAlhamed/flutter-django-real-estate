@@ -10,7 +10,7 @@ class FilterController extends GetxController {
   RangeValues priceRange = const RangeValues(0, 10000);
   RangeValues areaRange = const RangeValues(0, 1000);
   RangeValues roomsRange = const RangeValues(0, 10);
-  List<String> selectedCities = [];
+  List<String> selectedCities = <String>[];
   void init()
   {
       isForRent = Api.box.read('isForRent') ?? true;
@@ -21,7 +21,8 @@ class FilterController extends GetxController {
       villa = Api.box.read('villa') ?? true;
       flat = Api.box.read('flat') ?? true;
       house = Api.box.read('house') ?? true;
-      selectedCities  = Api.box.read('selectedCities') ?? [];
+      // selectedCities  = Api.box.read('selectedCities') == null || Api.box.read('selectedCities')
+      //       .length < 1? <String>[] : Api.box.read('selectedCities');
       priceRange = Api.box.read('minPrice' ) == null ? const RangeValues(0 , 10000) : RangeValues(Api.box.read('minPrice' ),Api.box.read('maxPrice'));
       areaRange = Api.box.read('minArea') == null
         ? const RangeValues(0, 1000)

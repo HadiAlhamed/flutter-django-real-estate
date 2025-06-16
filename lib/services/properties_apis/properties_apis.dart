@@ -79,7 +79,9 @@ class PropertiesApis {
 
   static Future<Facility?> addFacilityToProperty(
       {required int propertyId, required int facilityId}) async {
-    print("trying to add a property image ...");
+    print("trying to add a property facility ...");
+    print('facility_id: $facilityId (${facilityId.runtimeType})');
+
     try {
       final response = await _dio.post(
         "${Api.baseUrl}/properties/$propertyId/facilities/add/",
@@ -88,6 +90,8 @@ class PropertiesApis {
           'facility_id': facilityId,
         },
       );
+      print(
+          "response for adding facility : ${response.data} ${response.statusMessage}");
       if (response.statusCode == 201) {
         print("property Facility added Successfully...");
         final Map<String, dynamic> data = response.data;
@@ -98,6 +102,9 @@ class PropertiesApis {
         return null;
       }
     } catch (e) {
+      if (e is DioException) {
+        print('Error: ${e.response?.data}');
+      }
       print("Network Error : $e");
       return null;
     }
@@ -107,8 +114,10 @@ class PropertiesApis {
       {String? url, FilterOptions? filterOptions}) async {
     print("trying to get property page : $url");
     try {
-      final response = await _dio
-          .get(url ?? "${Api.baseUrl}/properties/", queryParameters: filterOptions == null ? {} : filterOptions.toJson(),);
+      final response = await _dio.get(
+        url ?? "${Api.baseUrl}/properties/",
+        queryParameters: filterOptions == null ? {} : filterOptions.toJson(),
+      );
       if (response.statusCode == 200) {
         print("Retrived successfully");
         Map<String, dynamic> data = response.data;
@@ -145,5 +154,44 @@ class PropertiesApis {
 
       return null;
     }
+  }
+
+  static Future<bool> addFavorite({required int propertyId}) async {
+    print("trying to get property $propertyId to favorites...");
+    try {
+      final response = await _dio.post(
+        "${Api.baseUrl}/properties/$propertyId/favorite/",
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      print(response.statusMessage);
+    } catch (e) {
+      if (e is DioException) {
+        print('Error: ${e.response?.data}');
+      } else {
+        print("Network Error : $e");
+      }
+    }
+    return false;
+  }
+  static Future<bool> cancelFavorite({required int propertyId}) async {
+    print("trying to delete property $propertyId from favorites...");
+    try {
+      final response = await _dio.delete(
+        "${Api.baseUrl}/properties/$propertyId/unfavorite/",
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      print(response.statusMessage);
+    } catch (e) {
+      if (e is DioException) {
+        print('Error: ${e.response?.data}');
+      } else {
+        print("Network Error : $e");
+      }
+    }
+    return false;
   }
 }

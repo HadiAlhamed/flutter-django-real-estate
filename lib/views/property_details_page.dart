@@ -9,8 +9,8 @@ import 'package:real_estate/models/property_details.dart';
 import 'package:real_estate/models/property_image.dart';
 import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
-import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
+import 'package:real_estate/widgets/my_snackbar.dart';
 
 class PropertyDetailsPage extends StatefulWidget {
   const PropertyDetailsPage({super.key});
@@ -29,8 +29,8 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _fetchPropertyDetails();
+      _determinePosition();
     });
-    // _determinePosition();
   }
 
   Future<void> _fetchPropertyDetails() async {
@@ -80,12 +80,9 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
     Position position = await Geolocator.getCurrentPosition();
     print(position.latitude);
     print(position.longitude);
-    setState(() {
-      _currentLocation = LatLng(position.latitude, position.longitude);
-    });
-    //I/flutter ( 6957): 35.1867283
-// I/flutter ( 6957): 35.9517433
-    // Move the map to the user's location
+
+    _currentLocation = LatLng(position.latitude, position.longitude);
+
     _mapController.move(_currentLocation!, 15.0);
   }
 
@@ -110,24 +107,74 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: screenHeight * 0.3,
-                      width: double.infinity,
-                      decoration: const BoxDecoration(),
-                      clipBehavior: Clip.antiAlias,
-                      child: pdController.propertyDetails!.images.isEmpty
-                          ? Image.asset(
-                              "assets/images/house.jpg",
-                              fit: BoxFit.cover,
-                            )
-                          : getImagePageView(),
+                    Stack(
+                      children: [
+                        Container(
+                          height: screenHeight * 0.3,
+                          width: double.infinity,
+                          decoration: const BoxDecoration(),
+                          clipBehavior: Clip.antiAlias,
+                          child: pdController.propertyDetails!.images.isEmpty
+                              ? Image.asset(
+                                  "assets/images/house.jpg",
+                                  fit: BoxFit.cover,
+                                )
+                              : getImagePageView(),
+                        ),
+                        GetBuilder(
+                          init: pdController,
+                          id: "isFavorite",
+                          builder: (controller) {
+                            int propertyId = pdController.propertyDetails!.id;
+
+                            return Positioned(
+                              top: screenHeight * 0.22,
+                              right: 4,
+                              child: IconButton(
+                                onPressed: () async {
+                                  bool result = pdController
+                                          .isFavorite[propertyId]
+                                      ? await PropertiesApis.cancelFavorite(
+                                          propertyId:
+                                              pdController.propertyDetails!.id)
+                                      : await PropertiesApis.addFavorite(
+                                          propertyId:
+                                              pdController.propertyDetails!.id);
+
+                                  if (result) {
+                                    pdController.flipIsFavorite(
+                                        propertyId: propertyId);
+                                  }
+                                  Get.showSnackbar(
+                                    MySnackbar(
+                                      success: result,
+                                      title: pdController.isFavorite[propertyId]
+                                          ? "Adding to Favorties"
+                                          : "Cancel Favorite",
+                                      message: result
+                                          ? "Property were ${pdController.isFavorite[propertyId] ? "added" : "cancelled"} successfully"
+                                          : "An error has occurred, please try again later.",
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.favorite,
+                                  color: pdController.isFavorite[propertyId]
+                                      ? primaryColor
+                                      : Colors.grey,
+                                  size: 40,
+                                ),
+                              ),
+                            );
+                          },
+                        )
+                      ],
                     ),
                     Padding(
                       padding:
                           const EdgeInsets.only(top: 8.0, left: 8, right: 8),
                       child: Text(
                         "${pdController.propertyDetails!.price.toString()} \$",
-                   
                       ),
                     ),
                     const Divider(),
@@ -179,7 +226,9 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
         children: [
           Icon(Icons.gps_fixed),
           SizedBox(width: 10),
-          Text("Location",),
+          Text(
+            "Location",
+          ),
         ],
       ),
     );
@@ -239,7 +288,6 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
           const SizedBox(height: 15),
           Text(
             "a ${pdController.propertyDetails!.area.toString()} squared meters ${pdController.propertyDetails!.propertyType} ${pdController.propertyDetails!.facilities.isEmpty ? "" : getFacilities()}.",
-           
           ),
         ],
       ),

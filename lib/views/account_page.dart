@@ -5,6 +5,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
+import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/controllers/theme_controller.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
@@ -78,13 +79,16 @@ class AccountPage extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: !isDark ?  Colors.white : Colors.grey,
+          color: !isDark ? Colors.white : Colors.grey,
         ),
         child: GetBuilder<AccountPageController>(
           id: 'sellerMode',
           init: accountController,
           builder: (controller) => ListTile(
-            title:  Text("Seller Mode", style: isDark ? h2TitleStyleWhite : h2TitleStyleBlack,),
+            title: Text(
+              "Seller Mode",
+              style: isDark ? h2TitleStyleWhite : h2TitleStyleBlack,
+            ),
             trailing: getSwitch(
               onChanged: (value) async {
                 bool result = await AuthApis.changeIsSeller(value);
@@ -201,6 +205,7 @@ class AccountPage extends StatelessWidget {
     if (result) {
       //remember to clear stuff
       bottomController.clear();
+      PropertyDetailsController().clear();
       Get.offAllNamed('/login');
     } else {
       Get.showSnackbar(

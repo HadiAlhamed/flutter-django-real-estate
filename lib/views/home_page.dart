@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/controllers/property_controller.dart';
+import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/controllers/theme_controller.dart';
 import 'package:real_estate/models/paginated_property.dart';
 import 'package:real_estate/models/profile_info.dart';
@@ -28,16 +29,22 @@ class _HomePageState extends State<HomePage>
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
   final ProfileController profileController = Get.find<ProfileController>();
-
+   final PropertyDetailsController pdController =
+      Get.find<PropertyDetailsController>();
   final ThemeController themeController = Get.find<ThemeController>();
   late TabController _tabController;
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: tabs.length, vsync: this);
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchProperties();
-      _fetchUserInfo();
+      Future.wait([
+        _fetchProperties(),
+        _fetchUserInfo(),
+        if(pdController.isFavoriteSet.isEmpty)_fetchFavorites(),
+
+      ]);
     });
   }
 
@@ -63,6 +70,19 @@ class _HomePageState extends State<HomePage>
       }
     } while (pProperty.nextPageUrl != null);
     propertyController.changeIsLoading(false);
+  }
+
+  Future<void> _fetchFavorites() async {
+    pdController.clear();
+    PaginatedProperty pProperty =
+        PaginatedProperty(nextPageUrl: null, properties: []);
+    do {
+      pProperty =
+          await PropertiesApis.getFavorites(url: pProperty.nextPageUrl);
+      for (var property in pProperty.properties) {
+        pdController.initFavorites(property);
+      }
+    } while (pProperty.nextPageUrl != null);
   }
 
   @override

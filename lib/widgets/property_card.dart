@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/models/property.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -7,9 +8,11 @@ import 'package:real_estate/textstyles/text_styles.dart';
 class PropertyCard extends StatelessWidget {
   final bool? favorite;
   final Property property;
+  final PropertyDetailsController? pdController;
   const PropertyCard({
     super.key,
     this.favorite,
+    this.pdController,
     required this.property,
   });
 
@@ -17,7 +20,8 @@ class PropertyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Get.toNamed('/propertyDetails', arguments: {'propertyId': property.id!});
+        Get.toNamed('/propertyDetails',
+            arguments: {'propertyId': property.id!});
       },
       child: Card(
         // color: Colors.white,
@@ -55,12 +59,20 @@ class PropertyCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       infoIconText(Icons.aspect_ratio_outlined,
-                          "${property.area.toString()} Sq m"),
+                          property.area.toStringAsFixed(0)),
                       infoIconText(Icons.bed_outlined,
                           property.numberOfRooms.toString()),
                       infoIconText(Icons.bathtub_outlined, "1"),
-                      if (favorite ?? false)
-                        const Icon(Icons.favorite, color: primaryColor),
+                      if (favorite != null)
+                        IconButton(
+                          onPressed: () async {
+                            pdController?.flipIsFavorite(
+                                propertyId: property.id!,
+                            );
+                          },
+                          icon: Icon(Icons.favorite,
+                              color: favorite! ? primaryColor : Colors.grey),
+                        )
                     ],
                   ),
                 ],

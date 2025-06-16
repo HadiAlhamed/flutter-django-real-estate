@@ -33,6 +33,14 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
     });
   }
 
+  @override
+  dispose() {
+    pdController.addToFavorites();
+    super.dispose();
+  }
+
+ 
+
   Future<void> _fetchPropertyDetails() async {
     pdController.changeIsLoading(true);
     final args = Get.arguments as Map<String, dynamic>;

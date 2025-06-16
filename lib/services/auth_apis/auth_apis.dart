@@ -150,10 +150,14 @@ class AuthApis {
       print("got a resonse");
       if (response.statusCode == 200) {
         final data = response.data;
+        print("!!!!access token : ${data['access']}");
+
+        print("!!!!!refresh token : ${data['refresh']}");
         await TokenService.saveTokens(
           accessToken: data['access'],
           refreshToken: data['refresh'],
         );
+
         print("Login succeed");
         return true;
       } else {
@@ -168,16 +172,20 @@ class AuthApis {
 
   static Future<bool> refreshToken() async {
     final refreshToken = await TokenService.getRefreshToken();
-
+    print("refresh token : $refreshToken");
     try {
       final response = await _dio.post(
         '${Api.baseUrl}/auth/jwt/refresh/',
         data: {'refresh': refreshToken},
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         print("tokens refreshed successfully");
+
         final data = response.data;
+        print("new access token : ${data['access']}");
+
+        print("new refresh token : ${data['refresh']}");
         await TokenService.saveTokens(
           accessToken: data['access'],
           refreshToken: data['refresh'],
@@ -189,6 +197,11 @@ class AuthApis {
         return false;
       }
     } catch (e) {
+      if (e is DioException) {
+        print("Dio Exception : ${e.response?.data}");
+      } else {
+        print("Network error : $e");
+      }
       // await TokenService.clearTokens();
       return false;
     }

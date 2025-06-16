@@ -13,5 +13,7 @@ class MySnackbar extends GetSnackBar {
           message: message,
           duration: const Duration(seconds: 3),
           icon: Icon(success ? Icons.check : Icons.error),
+          isDismissible: true,
+          snackPosition: SnackPosition.TOP,
         );
 }

@@ -194,4 +194,29 @@ class PropertiesApis {
     }
     return false;
   }
+  static Future<PaginatedProperty> getFavorites(
+      {String? url, FilterOptions? filterOptions}) async {
+    print("trying to get favorites property page : $url");
+    try {
+      final response = await _dio.get(
+        url ?? "${Api.baseUrl}/properties/favorites/",
+        queryParameters: filterOptions == null ? {} : filterOptions.toJson(),
+      );
+      if (response.statusCode == 200) {
+        print("Retrived successfully");
+        Map<String, dynamic> data = response.data;
+        List<Property> properties = (data['results'] as List).map((property) {
+          return Property.fromJson(property);
+        }).toList();
+        return PaginatedProperty(
+            nextPageUrl: data['next'] as String?, properties: properties);
+      } else {
+        print(response.statusMessage);
+      }
+    } catch (e) {
+      print("Network Error : $e");
+    }
+          return PaginatedProperty(nextPageUrl: null, properties: []);
+
+  }
 }

@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 
 class Property {
   final int? id;
+  final int? owner;
   final String propertyType;
   final String city;
   final int numberOfRooms;
@@ -18,6 +19,7 @@ class Property {
 
   Property({
     this.id,
+    this.owner, 
     required this.propertyType,
     required this.city,
     required this.numberOfRooms,
@@ -33,6 +35,7 @@ class Property {
   factory Property.fromJson(Map<String, dynamic> json) {
     return Property(
       id: json['id'] as int,
+      owner : json['owner'] as int,
       area: double.parse(json['area'] as String),
       city: json['city'] as String,
       isForRent: json['is_for_rent'] as bool,

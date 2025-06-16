@@ -5,10 +5,12 @@ import 'package:flutter/foundation.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:real_estate/models/facility.dart';
+import 'package:real_estate/models/property.dart';
 import 'package:real_estate/models/property_image.dart';
 
 class PropertyDetails {
   final int id;
+  final int? owner;
   final String propertyType;
   final String city;
   final int numberOfRooms;
@@ -23,6 +25,7 @@ class PropertyDetails {
   final List<PropertyImage?> images;
   PropertyDetails({
     required this.id,
+    this.owner,
     required this.propertyType,
     required this.city,
     required this.numberOfRooms,
@@ -39,6 +42,7 @@ class PropertyDetails {
 
   PropertyDetails copyWith({
     int? id,
+    int? owner,
     String? propertyType,
     String? city,
     int? numberOfRooms,
@@ -54,6 +58,7 @@ class PropertyDetails {
   }) {
     return PropertyDetails(
       id: id ?? this.id,
+      owner : owner ?? owner,
       propertyType: propertyType ?? this.propertyType,
       city: city ?? this.city,
       numberOfRooms: numberOfRooms ?? this.numberOfRooms,
@@ -72,6 +77,7 @@ class PropertyDetails {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'id': id,
+      'owner' : owner,
       'ptype': propertyType,
       'city': city,
       'number_of_rooms': numberOfRooms,
@@ -87,9 +93,27 @@ class PropertyDetails {
     };
   }
 
+  Property toProperty() {
+    return Property(
+      id: id,
+      owner: owner,
+      propertyType: propertyType,
+      city: city,
+      numberOfRooms: numberOfRooms,
+      area:   area,
+      price:   price,
+      isForRent:   isForRent,
+      latitude:   latitude,
+      longitude:   longitude,
+      mainPhotoUrl:   images.isNotEmpty ? images[0]!.imageUrl : null,
+    );
+  }
+
+
   factory PropertyDetails.fromJson(Map<String, dynamic> map) {
     return PropertyDetails(
       id: map['id'] as int,
+      owner: map['owner'] as int,
       propertyType: map['ptype'] as String,
       city: map['city'] as String,
       numberOfRooms: map['number_of_rooms'] as int,
@@ -116,7 +140,7 @@ class PropertyDetails {
 
   @override
   String toString() {
-    return 'PropertyDetails(id: $id, propertyType: $propertyType, city: $city, numberOfRooms: $numberOfRooms, area: $area, locationText: $locationText, price: $price, isForRent: $isForRent, details: $details, latitude: $latitude, longitude: $longitude, facilities: $facilities, images: $images)';
+    return 'PropertyDetails(id: $id, owner: $owner,  propertyType: $propertyType, city: $city, numberOfRooms: $numberOfRooms, area: $area, locationText: $locationText, price: $price, isForRent: $isForRent, details: $details, latitude: $latitude, longitude: $longitude, facilities: $facilities, images: $images)';
   }
 
   @override
@@ -124,6 +148,7 @@ class PropertyDetails {
     if (identical(this, other)) return true;
 
     return other.id == id &&
+        other.owner == owner &&
         other.propertyType == propertyType &&
         other.city == city &&
         other.numberOfRooms == numberOfRooms &&
@@ -141,6 +166,7 @@ class PropertyDetails {
   @override
   int get hashCode {
     return id.hashCode ^
+      
         propertyType.hashCode ^
         city.hashCode ^
         numberOfRooms.hashCode ^

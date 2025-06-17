@@ -11,17 +11,19 @@ class PropertyCard extends StatelessWidget {
   final bool? favorite;
   final Property property;
   final PropertyDetailsController? pdController;
+  final void Function()? onTap;
   const PropertyCard({
     super.key,
     this.favorite,
     this.pdController,
-    required this.property,
+    required this.property, 
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onTap: onTap ?? () {
         Get.toNamed('/propertyDetails',
             arguments: {'propertyId': property.id!});
       },

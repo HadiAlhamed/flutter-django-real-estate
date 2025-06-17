@@ -18,23 +18,39 @@ import 'package:real_estate/widgets/my_button.dart';
 import 'package:real_estate/widgets/my_input_field.dart';
 import 'package:real_estate/widgets/my_snackbar.dart';
 
-class AddPropertyPage extends StatelessWidget {
+class AddPropertyPage extends StatefulWidget {
+  const AddPropertyPage({super.key});
+
+  @override
+  State<AddPropertyPage> createState() => _AddPropertyPageState();
+}
+
+class _AddPropertyPageState extends State<AddPropertyPage> {
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
+
   final TextEditingController roomController = TextEditingController();
+
   final TextEditingController bathController = TextEditingController();
+
   final TextEditingController areaController = TextEditingController();
+
   final TextEditingController addressController = TextEditingController();
+
   final TextEditingController priceController = TextEditingController();
 
   final DropDownController dropDownController = Get.find<DropDownController>();
+
   final PropertyController propertyController = Get.find<PropertyController>();
 
   final AddPropertyController addProController =
       Get.find<AddPropertyController>();
+
   final ImagePicker imagePicker = ImagePicker();
 
   final List<String> propertyType = ['House', 'Flat', 'Villa'];
+  final args = Get.arguments;
+  late bool isAdd;
   final List<String> cities = [
     "Afrin",
     "Aleppo",
@@ -71,9 +87,26 @@ class AddPropertyPage extends StatelessWidget {
     "Yabrud",
     "Zabadani",
   ];
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  AddPropertyPage({super.key});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    isAdd = args['isAdd'];
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    roomController.dispose();
+    bathController.dispose();
+    areaController.dispose();
+    addressController.dispose();
+    priceController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +115,7 @@ class AddPropertyPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Property"),
+        title: Text("${isAdd ? "Add" : "Update"} Property"),
         elevation: 2,
       ),
       body: SingleChildScrollView(
@@ -93,8 +126,8 @@ class AddPropertyPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                addImagesWidget(screenWidth, screenHeight),
-                const SizedBox(height: 20),
+                if (isAdd) addImagesWidget(screenWidth, screenHeight),
+                if (isAdd) const SizedBox(height: 20),
                 getDropdownFormField(
                   hint: "Property Type",
                   onChanged: (value) {
@@ -191,7 +224,7 @@ class AddPropertyPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                getFacilitiesBox(screenHeight),
+                if (isAdd) getFacilitiesBox(screenHeight),
                 const SizedBox(
                   height: 20,
                 ),
@@ -199,8 +232,12 @@ class AddPropertyPage extends StatelessWidget {
                   init: addProController,
                   id: "addButton",
                   builder: (controller) => MyButton(
-                    title: addProController.isAddLoading ? null : "Add",
-                    onPressed: handleAddProperty,
+                    title: addProController.isAddLoading
+                        ? null
+                        : isAdd
+                            ? "Add"
+                            : "Update",
+                    onPressed: isAdd ? handleAddProperty : handleUpdateProperty,
                   ),
                 ),
               ],
@@ -212,6 +249,39 @@ class AddPropertyPage extends StatelessWidget {
         bottomController: bottomController,
       ),
     );
+  }
+
+  void handleUpdateProperty() async {
+    if (formKey.currentState!.validate()) {
+      addProController.changeIsAddLoading(true);
+      final Property? propertyResult = await PropertiesApis.updateProperty(
+        property: Property(
+          propertyType: addProController.selectedType.toLowerCase(),
+          city: addProController.selectedCity,
+          area: double.parse(areaController.text),
+          price: double.parse(priceController.text),
+          numberOfRooms: int.parse(roomController.text),
+          isForRent: addProController.isForRent,
+        ),
+      );
+      addProController.changeIsAddLoading(false);
+      bool flag = propertyResult != null;
+
+      Get.showSnackbar(
+        MySnackbar(
+          success: flag,
+          title: "Update Property",
+          message: !flag
+              ? "Failed to update property , please try again later"
+              : "Property was updated successfully!",
+        ),
+      );
+      if (flag) {
+        propertyController.addMyProperty(propertyResult);
+        addProController.clear();
+        Get.offNamed('/myPropertiesPage');
+      }
+    }
   }
 
   void handleAddProperty() async {
@@ -413,6 +483,7 @@ class AddPropertyPage extends StatelessWidget {
       child: DropdownButtonFormField(
         hint: Text(hint),
         validator: (value) {
+          if (!isAdd) return null;
           if (value == null || value == '') {
             return validatorHint;
           }

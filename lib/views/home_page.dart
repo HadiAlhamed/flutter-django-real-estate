@@ -48,10 +48,10 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> _fetchUserInfo() async {
-        profileController.changeIsInitialLoading(true);
+    profileController.changeIsInitialLoading(true);
 
     print("trying to fetch user info from home page");
-    
+
     ProfileInfo? profileInfo = await AuthApis.getProfile();
     if (profileInfo == null) {
       print("!!!! returned profileInfo is null");
@@ -69,8 +69,11 @@ class _HomePageState extends State<HomePage>
     do {
       pProperty =
           await PropertiesApis.getProperties(url: pProperty.nextPageUrl);
+              
       for (var property in pProperty.properties) {
         propertyController.addProperty(property);
+
+        
       }
     } while (pProperty.nextPageUrl != null);
     propertyController.changeIsLoading(false);
@@ -107,11 +110,11 @@ class _HomePageState extends State<HomePage>
             init: profileController,
             builder: (controller) => CircleAvatar(
               radius: 25,
-              backgroundImage:profileController.isInitialLoading? 
-              const AssetImage("assets/images/person.jpg")
-              :  NetworkImage(
-                profileController.currentUserInfo!.profilePhoto,
-              ),
+              backgroundImage: profileController.isInitialLoading
+                  ? const AssetImage("assets/images/person.jpg")
+                  : NetworkImage(
+                      profileController.currentUserInfo!.profilePhoto,
+                    ),
             ),
           ),
         ),
@@ -125,9 +128,9 @@ class _HomePageState extends State<HomePage>
               init: profileController,
               id: 'fullName',
               builder: (controller) => Text(
-                profileController.isInitialLoading ? "To our app"
-                :
-                "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
+                profileController.isInitialLoading
+                    ? "To our app"
+                    : "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
               ),
             ),
           ],

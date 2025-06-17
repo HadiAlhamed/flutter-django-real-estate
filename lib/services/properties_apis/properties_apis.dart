@@ -39,6 +39,34 @@ class PropertiesApis {
     }
   }
 
+  static Future<Property?> updateProperty({required Property property}) async {
+    print("trying to update a property...");
+    print(property);
+    try {
+      final response = await _dio.patch(
+        "${Api.baseUrl}/properties/${property.id!}/edit/",
+        data: property.toJson(),
+      );
+      print("HI");
+      if (response.statusCode == 200) {
+        print("property added Successfully...");
+        final Map<String, dynamic> data = response.data;
+        final Property pro = Property.fromJson(data);
+        return pro;
+      } else {
+        print(response.statusMessage);
+      }
+    } catch (e) {
+      if (e is DioException) {
+        print("Dio Exception : ${e.response?.data}");
+      }
+      else {
+        print("Network Error : $e");
+      }
+    }
+    return null;
+  }
+
   static Future<PropertyImage?> addImageToProperty(
       {required int propertyId, required XFile image}) async {
     print("trying to add a property image ...");
@@ -175,6 +203,7 @@ class PropertiesApis {
     }
     return false;
   }
+
   static Future<bool> cancelFavorite({required int propertyId}) async {
     print("trying to delete property $propertyId from favorites...");
     try {
@@ -194,6 +223,7 @@ class PropertiesApis {
     }
     return false;
   }
+
   static Future<PaginatedProperty> getFavorites(
       {String? url, FilterOptions? filterOptions}) async {
     print("trying to get favorites property page : $url");
@@ -217,6 +247,5 @@ class PropertiesApis {
       print("Network Error : $e");
     }
     return PaginatedProperty(nextPageUrl: null, properties: []);
-
   }
 }

@@ -11,26 +11,21 @@ class TokenService {
   }) async {
     await _storage.write(key: 'access_token', value: accessToken);
     await _storage.write(key: 'refresh_token', value: refreshToken);
-    if (kDebugMode) {
+    // if (kDebugMode) {
       await Api.box.write("access_token", accessToken);
       await Api.box.write("refresh_token", refreshToken);
-    }
+    // }
   }
 
   static Future<String?> getAccessToken() async {
     String? accessToken = await _storage.read(key: 'access_token');
-    if (kDebugMode && accessToken == null) {
-      return Api.box.read('access_token');
-    }
+    accessToken ??= Api.box.read('access_token');
     return accessToken;
   }
 
   static Future<String?> getRefreshToken() async {
     String? refreshToken = await _storage.read(key: 'refresh_token');
-    if(kDebugMode && refreshToken == null)
-    {
-      refreshToken = Api.box.read("refresh_token");
-    }
+    refreshToken ??= Api.box.read("refresh_token");
     return refreshToken;
   }
 

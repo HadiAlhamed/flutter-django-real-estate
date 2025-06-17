@@ -8,6 +8,7 @@ class PropertyController extends GetxController {
   List<Property> houses = [];
   List<Property> flats = [];
   List<Property> villas = [];
+  List<Property> myProperties = [];
   bool isLoading = false;
   void changeIsLoading(bool value) {
     isLoading = value;
@@ -20,6 +21,15 @@ class PropertyController extends GetxController {
   List<Property> get getHouses => houses;
   List<Property> get getVillas => villas;
   List<Property> get getFlats => flats;
+  void addMyProperty(Property property) {
+    for (int i = 0; i < myProperties.length; i++) {
+      if (myProperties[i].id! == property.id!) {
+        myProperties[i] = property;
+        break;
+      }
+    }
+    update(['property${property.id!}']);
+  }
 
   void addProperty(Property property) {
     properties.add(property);

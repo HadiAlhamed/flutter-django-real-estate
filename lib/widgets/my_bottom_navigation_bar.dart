@@ -90,7 +90,9 @@ class MyBottomNavigationBar extends StatelessWidget {
     }
     if (index == 2) {
       if (bottomController.isSeller) {
-        Get.offNamed('/addPropertyPage');
+        Get.offNamed('/addPropertyPage' , arguments : {
+          "isAdd" : true,
+        });
       } else {
         Get.offNamed('/favoritesPage');
       }

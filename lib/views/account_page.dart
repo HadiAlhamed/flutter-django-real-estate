@@ -165,7 +165,9 @@ class AccountPage extends StatelessWidget {
             "My Properties",
           ),
           trailing: const Icon(Icons.keyboard_arrow_right, size: 32),
-          onTap: () {},
+          onTap: () {
+            Get.toNamed("/myPropertiesPage");
+          },
         ),
         const SizedBox(height: 10),
         ListTile(

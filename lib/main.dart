@@ -17,6 +17,7 @@ import 'package:real_estate/views/favorites_page.dart';
 import 'package:real_estate/views/filter_search_page.dart';
 import 'package:real_estate/views/home_page.dart';
 import 'package:real_estate/views/maps/open_street_map_with_gps.dart';
+import 'package:real_estate/views/my_properties_page.dart';
 import 'package:real_estate/views/profile_page.dart';
 import 'package:real_estate/views/property_details_page.dart';
 import 'package:real_estate/views/search_result_page.dart';
@@ -52,12 +53,20 @@ class MyApp extends StatelessWidget {
             : '/login',
         initialBinding: MyBindings(),
         getPages: [
+          
           GetPage(
             name: '/login',
             page: () => Login(),
             transition: Transition.fade,
             transitionDuration: const Duration(milliseconds: 300),
           ),
+          GetPage(
+            name: '/myPropertiesPage',
+            page: () => const MyPropertiesPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          
           GetPage(
             name: '/filterSearchPage',
             page: () => const FilterSearchPage(),
@@ -114,7 +123,8 @@ class MyApp extends StatelessWidget {
           ),
           GetPage(
             name: '/addPropertyPage',
-            page: () => AddPropertyPage(),
+            page: () => const AddPropertyPage(),
+            
             transition: Transition.fade,
             transitionDuration: const Duration(milliseconds: 300),
           ),

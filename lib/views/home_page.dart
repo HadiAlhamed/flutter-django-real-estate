@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.wait([
         _fetchProperties(),
-        _fetchUserInfo(),
+        if(profileController.isInitialLoading)_fetchUserInfo(),
         if (pdController.isFavoriteSet.isEmpty) _fetchFavorites(),
       ]);
     });

@@ -87,7 +87,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
                 itemCount: filteredProperties.length, // For example, 10 items for each tab
                 itemBuilder: (context, index) {
                   return PropertyCard(
-                    favorite: true,
                     property: Property(
                       area: filteredProperties[index].area,
                       city: filteredProperties[index].city,

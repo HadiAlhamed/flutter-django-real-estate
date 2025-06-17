@@ -11,26 +11,37 @@ class FilterController extends GetxController {
   RangeValues areaRange = const RangeValues(0, 1000);
   RangeValues roomsRange = const RangeValues(0, 10);
   List<String> selectedCities = <String>[];
-  void init() {
-    isForRent = Api.box.read('isForRent')  as bool? ?? true;
-    isForSale = Api.box.read('isForSale') as bool? ?? true;
-    orderByArea = Api.box.read('orderByArea') as bool? ?? true;
-    orderByPrice = Api.box.read('orderByPrice') as bool? ?? true;
-    orderAsc = Api.box.read('orderAsc') as bool? ?? true;
-    villa = Api.box.read('villa') as bool? ?? true;
-    flat = Api.box.read('flat') as bool? ?? true;
-    house = Api.box.read('house') as bool? ?? true;
+  bool isInitialLoading = true;
+
+  Future<void> init() async {
+    isForRent = await Api.box.read('isForRent') as bool? ?? true;
+    isForSale = await Api.box.read('isForSale') as bool? ?? true;
+    orderByArea = await Api.box.read('orderByArea') as bool? ?? true;
+    orderByPrice = await Api.box.read('orderByPrice') as bool? ?? true;
+    orderAsc = await Api.box.read('orderAsc') as bool? ?? true;
+    villa = await Api.box.read('villa') as bool? ?? true;
+    flat = await Api.box.read('flat') as bool? ?? true;
+    house = await Api.box.read('house') as bool? ?? true;
     // selectedCities  = Api.box.read('selectedCities') == null || Api.box.read('selectedCities')
     //       .length < 1? <String>[] : Api.box.read('selectedCities');
-    priceRange = Api.box.read('minPrice') == null
+    priceRange = await Api.box.read('minPrice') == null
         ? const RangeValues(0, 10000)
-        : RangeValues(Api.box.read('minPrice'), Api.box.read('maxPrice'));
-    areaRange = Api.box.read('minArea') == null
+        : RangeValues(
+            await Api.box.read('minPrice'), await Api.box.read('maxPrice'));
+    areaRange = await Api.box.read('minArea') == null
         ? const RangeValues(0, 1000)
-        : RangeValues(Api.box.read('minArea'), Api.box.read('maxArea'));
-    roomsRange = Api.box.read('minRooms') == null
+        : RangeValues(
+            await Api.box.read('minArea'), await Api.box.read('maxArea'));
+    roomsRange = await Api.box.read('minRooms') == null
         ? const RangeValues(0, 10)
-        : RangeValues(Api.box.read('minRooms'), Api.box.read('maxRooms'));
+        : RangeValues(
+            await Api.box.read('minRooms'), await Api.box.read('maxRooms'));
+    changeIsInitialLoading(false);
+  }
+
+  void changeIsInitialLoading(bool value) {
+    isInitialLoading = value;
+    update(['main']);
   }
 
   void setSelectedCities(List<String> cities) {

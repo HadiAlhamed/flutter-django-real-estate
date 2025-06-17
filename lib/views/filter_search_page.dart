@@ -60,7 +60,12 @@ class _FilterSearchPageState extends State<FilterSearchPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    FilterController().init();
+    if(filterController.isInitialLoading)
+    {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        filterController.init();
+      });
+    }
   }
 
   @override
@@ -72,120 +77,132 @@ class _FilterSearchPageState extends State<FilterSearchPage> {
         leading: const Icon(Icons.category),
         title: const Text("Filters"),
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Property Listing"),
-              const SizedBox(height: 20),
-              forSaleRentWidget(),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text("Property Type"),
-              const SizedBox(height: 20),
-              propertyTypeOptions(),
-              const SizedBox(height: 20),
-              const Text("Price Range"),
-              const SizedBox(height: 20),
-              GetBuilder<FilterController>(
-                init: filterController,
-                id: "priceRange",
-                builder: (controller) => RangeSlider(
-                  values: filterController.priceRange,
-                  onChanged: (range) {
-                    filterController.changePriceRange(range);
-                  },
-                  min: 0,
-                  max: 10000,
-                  divisions: 10000, // <-- Add this
-                  labels: RangeLabels(
-                    filterController.priceRange.start.toStringAsFixed(0),
-                    filterController.priceRange.end.toStringAsFixed(0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text("Area Range"),
-              const SizedBox(height: 20),
-              GetBuilder<FilterController>(
-                init: filterController,
-                id: "areaRange",
-                builder: (controller) => RangeSlider(
-                  values: filterController.areaRange,
-                  onChanged: (range) {
-                    filterController.changeAreaRange(range);
-                  },
-                  min: 0,
-                  max: 1000,
-                  divisions: 1000, // <-- Add this
-                  labels: RangeLabels(
-                    filterController.areaRange.start.toStringAsFixed(0),
-                    filterController.areaRange.end.toStringAsFixed(0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Text("Rooms Range"),
-              const SizedBox(height: 20),
-              GetBuilder<FilterController>(
-                init: filterController,
-                id: "roomsRange",
-                builder: (controller) => RangeSlider(
-                  values: filterController.roomsRange,
-                  onChanged: (range) {
-                    filterController.changeRoomsRange(range);
-                  },
-                  min: 0,
-                  max: 10,
-                  divisions: 10, // <-- Add this
-                  labels: RangeLabels(
-                    filterController.roomsRange.start.toStringAsFixed(0),
-                    filterController.roomsRange.end.toStringAsFixed(0),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              //cities
-              MultiSelectDialogField(
-                items:
-                    cities.map((city) => MultiSelectItem(city, city)).toList(),
-                searchable: true,
-                initialValue: filterController.selectedCities,
-                listType: MultiSelectListType.CHIP,
-                title: const Text("Cities"),
-                selectedColor: primaryColor,
-                selectedItemsTextStyle: const TextStyle(color: Colors.white),
-                buttonText: const Text("Select Cities"),
-                onConfirm: (results) {
-                  print("Selected cities: $results");
-                  filterController.setSelectedCities(results);
-                },
-              ),
-              const SizedBox(height: 20),
-              const Text("Order By"), const SizedBox(height: 20),
+      body: GetBuilder<FilterController>(
+          init: filterController,
+          id: "main",
+          builder: (controller) {
+            if (filterController.isInitialLoading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("Property Listing"),
+                    const SizedBox(height: 20),
+                    forSaleRentWidget(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const Text("Property Type"),
+                    const SizedBox(height: 20),
+                    propertyTypeOptions(),
+                    const SizedBox(height: 20),
+                    const Text("Price Range"),
+                    const SizedBox(height: 20),
+                    GetBuilder<FilterController>(
+                      init: filterController,
+                      id: "priceRange",
+                      builder: (controller) => RangeSlider(
+                        values: filterController.priceRange,
+                        onChanged: (range) {
+                          filterController.changePriceRange(range);
+                        },
+                        min: 0,
+                        max: 10000,
+                        divisions: 10000, // <-- Add this
+                        labels: RangeLabels(
+                          filterController.priceRange.start.toStringAsFixed(0),
+                          filterController.priceRange.end.toStringAsFixed(0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text("Area Range"),
+                    const SizedBox(height: 20),
+                    GetBuilder<FilterController>(
+                      init: filterController,
+                      id: "areaRange",
+                      builder: (controller) => RangeSlider(
+                        values: filterController.areaRange,
+                        onChanged: (range) {
+                          filterController.changeAreaRange(range);
+                        },
+                        min: 0,
+                        max: 1000,
+                        divisions: 1000, // <-- Add this
+                        labels: RangeLabels(
+                          filterController.areaRange.start.toStringAsFixed(0),
+                          filterController.areaRange.end.toStringAsFixed(0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text("Rooms Range"),
+                    const SizedBox(height: 20),
+                    GetBuilder<FilterController>(
+                      init: filterController,
+                      id: "roomsRange",
+                      builder: (controller) => RangeSlider(
+                        values: filterController.roomsRange,
+                        onChanged: (range) {
+                          filterController.changeRoomsRange(range);
+                        },
+                        min: 0,
+                        max: 10,
+                        divisions: 10, // <-- Add this
+                        labels: RangeLabels(
+                          filterController.roomsRange.start.toStringAsFixed(0),
+                          filterController.roomsRange.end.toStringAsFixed(0),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    //cities
+                    MultiSelectDialogField(
+                      items: cities
+                          .map((city) => MultiSelectItem(city, city))
+                          .toList(),
+                      searchable: true,
+                      initialValue: filterController.selectedCities,
+                      listType: MultiSelectListType.CHIP,
+                      title: const Text("Cities"),
+                      selectedColor: primaryColor,
+                      selectedItemsTextStyle:
+                          const TextStyle(color: Colors.white),
+                      buttonText: const Text("Select Cities"),
+                      onConfirm: (results) {
+                        print("Selected cities: $results");
+                        filterController.setSelectedCities(results);
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    const Text("Order By"), const SizedBox(height: 20),
 
-              orderOptions(),
-              const SizedBox(height: 30),
-              GetBuilder<FilterController>(
-                init: filterController,
-                id: "saveButton",
-                builder: (controller) => MyButton(
-                  title: filterController.isSaveLoading ? null : "Save",
-                  onPressed: () async {
-                    filterController.changeIsSaveLoading(true);
-                    await filterController.save();
-                    filterController.changeIsSaveLoading(false);
-                    Get.back();
-                  },
+                    orderOptions(),
+                    const SizedBox(height: 30),
+                    GetBuilder<FilterController>(
+                      init: filterController,
+                      id: "saveButton",
+                      builder: (controller) => MyButton(
+                        title: filterController.isSaveLoading ? null : "Save",
+                        onPressed: () async {
+                          filterController.changeIsSaveLoading(true);
+                          await filterController.save();
+                          filterController.changeIsSaveLoading(false);
+                          Get.back();
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 

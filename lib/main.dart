@@ -29,7 +29,7 @@ void main() async {
     TokenService.clearTokens(),
     ThemeController().init(),
   ]);
-  runApp( MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -38,98 +38,100 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(()=> GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Real Estate',
-          theme: myLightTheme,
-          darkTheme: myDarkTheme,
-          themeMode: themeController.themeMode.value,
-          initialRoute: Api.box.read("rememberMe") != null && Api.box.read("rememberMe") ? 
-          '/home'
-          :
-          '/login',
-          initialBinding: MyBindings(),
-          getPages: [
-            
-            GetPage(
-              name: '/login',
-              page: () => Login(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/filterSearchPage',
-              page: () => const FilterSearchPage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
+    print("remember me : ${Api.box.read("rememberMe")}");
+    return Obx(
+      () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Real Estate',
+        theme: myLightTheme,
+        darkTheme: myDarkTheme,
+        themeMode: themeController.themeMode.value,
+        initialRoute: Api.box.read("rememberMe") != null &&
+                Api.box.read("rememberMe") as bool
+            ? '/home'
+            : '/login',
+        initialBinding: MyBindings(),
+        getPages: [
+          GetPage(
+            name: '/login',
+            page: () => Login(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
           ),
-            GetPage(
-              name: '/verifyCodePage',
-              page: () => const VerifyCodePage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/signup',
-              page: () => Signup(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/home',
-              page: () => const HomePage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/propertyDetails',
-              page: () => const PropertyDetailsPage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/profilePage',
-              page: () => ProfilePage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/forgetPassword',
-              page: () => ForgetPasswordPage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/accountPage',
-              page: () => AccountPage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/favoritesPage',
-              page: () => const FavoritesPage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
-              name: '/addPropertyPage',
-              page: () => AddPropertyPage(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-            GetPage(
+          GetPage(
+            name: '/filterSearchPage',
+            page: () => const FilterSearchPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/verifyCodePage',
+            page: () => const VerifyCodePage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/signup',
+            page: () => Signup(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/home',
+            page: () => const HomePage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/propertyDetails',
+            page: () => const PropertyDetailsPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/profilePage',
+            page: () => ProfilePage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/forgetPassword',
+            page: () => ForgetPasswordPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/accountPage',
+            page: () => AccountPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/favoritesPage',
+            page: () => const FavoritesPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
+            name: '/addPropertyPage',
+            page: () => AddPropertyPage(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+          GetPage(
             name: '/searchResultPage',
             page: () => const SearchResultPage(),
             transition: Transition.fade,
             transitionDuration: const Duration(milliseconds: 300),
           ),
-            GetPage(
-              name: '/openStreetMap',
-              page: () => const OpenStreetMapWithGPS(),
-              transition: Transition.fade,
-              transitionDuration: const Duration(milliseconds: 300),
-            ),
-          ],
-        ),);
+          GetPage(
+            name: '/openStreetMap',
+            page: () => const OpenStreetMapWithGPS(),
+            transition: Transition.fade,
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+        ],
+      ),
+    );
   }
 }

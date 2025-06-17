@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:real_estate/controllers/login_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/models/profile_info.dart';
+import 'package:real_estate/services/api.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_button.dart';
@@ -75,7 +76,36 @@ class Login extends StatelessWidget {
                           );
                         },
                       ),
-                      GetBuilder(
+                      GetBuilder<LoginController>(
+                        id: 'rememberMe',
+                        init: loginController,
+                        builder: (controller) {
+                          return Container(
+                            margin: const EdgeInsets.only(
+                              bottom: 10,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Remember Me",
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Checkbox(
+                                  value: loginController.rememberMe,
+                                  onChanged: (value) {
+                                    loginController.flipRememberMe(value);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      GetBuilder<LoginController>(
                         id: 'loading',
                         init: loginController,
                         builder: (controller) {
@@ -171,11 +201,15 @@ class Login extends StatelessWidget {
       if (result) {
         ProfileInfo? userInfo = await AuthApis.getProfile();
         loginController.clear();
+        await Api.box.write('rememberMe', loginController.rememberMe);
         if (userInfo != null) {
+          //store user info in box
           profileController.changeCurrentUserInfo(userInfo);
           Get.offNamed('/home');
+          
         } else {
           Get.toNamed('/profilePage', arguments: {'isNew': true});
+          //if new store it in the profile page
         }
       } else {
         Get.showSnackbar(

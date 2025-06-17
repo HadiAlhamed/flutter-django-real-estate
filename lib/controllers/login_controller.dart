@@ -3,6 +3,11 @@ import 'package:get/get.dart';
 class LoginController extends GetxController {
   bool isLoading = false;
   bool hidePassword = true;
+  bool rememberMe = false;
+  void flipRememberMe(bool? value) {
+    rememberMe = value ?? !rememberMe;
+    update(['rememberMe']);
+  }
 
   void flipIsLoading() {
     isLoading = !isLoading;

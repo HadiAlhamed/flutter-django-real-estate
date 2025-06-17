@@ -6,6 +6,15 @@ class ProfileController extends GetxController {
   XFile? profilePhoto;
   ProfileInfo? currentUserInfo;
   bool isUpdateLoading = false;
+  bool isInitialLoading = true;
+  void changeIsInitialLoading(bool value) {
+    isInitialLoading = value;
+    update([
+      "profilePhoto",
+      'fullName',
+    ]);
+  }
+
   void changeIsUpdateLoading(bool value) {
     isUpdateLoading = value;
     update(['updateProfile']);
@@ -19,11 +28,10 @@ class ProfileController extends GetxController {
   void changeCurrentUserInfo(ProfileInfo profileInfo) {
     currentUserInfo = profileInfo;
     //update what need to be updated...
-    update(['fullName' , 'profilePhoto']);
+    update(['fullName', 'profilePhoto']);
   }
-  void clear()
-  {
-        isUpdateLoading = false;
 
+  void clear() {
+    isUpdateLoading = false;
   }
 }

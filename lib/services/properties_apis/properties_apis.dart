@@ -216,7 +216,7 @@ class PropertiesApis {
     } catch (e) {
       print("Network Error : $e");
     }
-          return PaginatedProperty(nextPageUrl: null, properties: []);
+    return PaginatedProperty(nextPageUrl: null, properties: []);
 
   }
 }

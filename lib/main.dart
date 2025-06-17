@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/bindings/my_bindings.dart';
 import 'package:real_estate/controllers/theme_controller.dart';
+import 'package:real_estate/services/api.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/services/auth_services/token_service.dart';
 import 'package:real_estate/services/properties_apis/properties_apis.dart';
@@ -43,7 +44,10 @@ class MyApp extends StatelessWidget {
           theme: myLightTheme,
           darkTheme: myDarkTheme,
           themeMode: themeController.themeMode.value,
-          initialRoute: '/login',
+          initialRoute: Api.box.read("rememberMe") != null && Api.box.read("rememberMe") ? 
+          '/home'
+          :
+          '/login',
           initialBinding: MyBindings(),
           getPages: [
             
@@ -103,7 +107,7 @@ class MyApp extends StatelessWidget {
             ),
             GetPage(
               name: '/favoritesPage',
-              page: () => FavoritesPage(),
+              page: () => const FavoritesPage(),
               transition: Transition.fade,
               transitionDuration: const Duration(milliseconds: 300),
             ),

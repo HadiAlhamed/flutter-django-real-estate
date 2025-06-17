@@ -280,7 +280,6 @@ class ProfilePage extends StatelessWidget {
                     print("got updating profile info result");
                     if (result != null) {
                       profileController.changeCurrentUserInfo(result);
-
                       if (isNew) {
                         Get.offAllNamed('/home');
                       } else {

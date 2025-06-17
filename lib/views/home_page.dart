@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage>
   final BottomNavigationBarController bottomController =
       Get.find<BottomNavigationBarController>();
   final ProfileController profileController = Get.find<ProfileController>();
-   final PropertyDetailsController pdController =
+  final PropertyDetailsController pdController =
       Get.find<PropertyDetailsController>();
   final ThemeController themeController = Get.find<ThemeController>();
   late TabController _tabController;
@@ -37,24 +37,28 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     _tabController = TabController(length: tabs.length, vsync: this);
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.wait([
         _fetchProperties(),
         _fetchUserInfo(),
-        if(pdController.isFavoriteSet.isEmpty)_fetchFavorites(),
-
+        if (pdController.isFavoriteSet.isEmpty) _fetchFavorites(),
       ]);
     });
   }
 
   Future<void> _fetchUserInfo() async {
+        profileController.changeIsInitialLoading(true);
+
+    print("trying to fetch user info from home page");
+    
     ProfileInfo? profileInfo = await AuthApis.getProfile();
     if (profileInfo == null) {
       print("!!!! returned profileInfo is null");
       return;
     }
     profileController.changeCurrentUserInfo(profileInfo);
+    profileController.changeIsInitialLoading(false);
   }
 
   Future<void> _fetchProperties() async {
@@ -77,8 +81,7 @@ class _HomePageState extends State<HomePage>
     PaginatedProperty pProperty =
         PaginatedProperty(nextPageUrl: null, properties: []);
     do {
-      pProperty =
-          await PropertiesApis.getFavorites(url: pProperty.nextPageUrl);
+      pProperty = await PropertiesApis.getFavorites(url: pProperty.nextPageUrl);
       for (var property in pProperty.properties) {
         pdController.initFavorites(property);
       }
@@ -104,7 +107,9 @@ class _HomePageState extends State<HomePage>
             init: profileController,
             builder: (controller) => CircleAvatar(
               radius: 25,
-              backgroundImage: NetworkImage(
+              backgroundImage:profileController.isInitialLoading? 
+              const AssetImage("assets/images/person.jpg")
+              :  NetworkImage(
                 profileController.currentUserInfo!.profilePhoto,
               ),
             ),
@@ -120,6 +125,8 @@ class _HomePageState extends State<HomePage>
               init: profileController,
               id: 'fullName',
               builder: (controller) => Text(
+                profileController.isInitialLoading ? "To our app"
+                :
                 "${profileController.currentUserInfo?.firstName} ${profileController.currentUserInfo?.lastName}",
               ),
             ),

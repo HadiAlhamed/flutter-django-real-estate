@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:real_estate/services/api.dart';
 
 class TokenService {
   static const _storage = FlutterSecureStorage();
@@ -9,11 +11,28 @@ class TokenService {
   }) async {
     await _storage.write(key: 'access_token', value: accessToken);
     await _storage.write(key: 'refresh_token', value: refreshToken);
+    if (kDebugMode) {
+      await Api.box.write("access_token", accessToken);
+      await Api.box.write("refresh_token", refreshToken);
+    }
   }
 
-  static Future<String?> getAccessToken() => _storage.read(key: 'access_token');
-  static Future<String?> getRefreshToken() =>
-      _storage.read(key: 'refresh_token');
+  static Future<String?> getAccessToken() async {
+    String? accessToken = await _storage.read(key: 'access_token');
+    if (kDebugMode && accessToken == null) {
+      return Api.box.read('access_token');
+    }
+    return accessToken;
+  }
+
+  static Future<String?> getRefreshToken() async {
+    String? refreshToken = await _storage.read(key: 'refresh_token');
+    if(kDebugMode && refreshToken == null)
+    {
+      refreshToken = Api.box.read("refresh_token");
+    }
+    return refreshToken;
+  }
 
   static Future<void> clearTokens() async {
     await _storage.deleteAll();

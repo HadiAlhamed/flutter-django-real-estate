@@ -7,6 +7,7 @@ import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/controllers/theme_controller.dart';
+import 'package:real_estate/services/api.dart';
 import 'package:real_estate/services/auth_apis/auth_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
@@ -206,6 +207,7 @@ class AccountPage extends StatelessWidget {
       //remember to clear stuff
       bottomController.clear();
       PropertyDetailsController().clear();
+      await Api.box.write('rememberMe', false);
       Get.offAllNamed('/login');
     } else {
       Get.showSnackbar(

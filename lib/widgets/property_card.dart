@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/models/property.dart';
+import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
+import 'package:real_estate/widgets/my_snackbar.dart';
 
 class PropertyCard extends StatelessWidget {
   final bool? favorite;
@@ -66,9 +68,22 @@ class PropertyCard extends StatelessWidget {
                       if (favorite != null)
                         IconButton(
                           onPressed: () async {
-                            pdController?.flipIsFavorite(
+                            bool result = pdController!.isFavorite[property.id!]
+                                ? await PropertiesApis.cancelFavorite(
+                                    propertyId: property.id!)
+                                : await PropertiesApis.addFavorite(
+                                    propertyId: property.id!);
+                            if (result) {
+                              pdController?.flipIsFavorite(
                                 propertyId: property.id!,
-                            );
+                              );
+                            } else {
+                              Get.showSnackbar(MySnackbar(
+                                  success: false,
+                                  title: "Favorite",
+                                  message:
+                                      "Failed to update Favorite,please try again later"));
+                            }
                           },
                           icon: Icon(Icons.favorite,
                               color: favorite! ? primaryColor : Colors.grey),

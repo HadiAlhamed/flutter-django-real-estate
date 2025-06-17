@@ -7,6 +7,12 @@ class AddPropertyController extends GetxController {
   bool isForRent = true;
   String selectedType = '';
   String selectedCity = '';
+  bool isAddLoading = false;
+  void changeIsAddLoading(bool value) {
+    isAddLoading = value;
+    update(["addButton"]);
+  }
+
   set setSelectedCity(String city) => selectedCity = city;
   set setSelectedType(String type) => selectedType = type;
   void flipSelectedAt(int index) {

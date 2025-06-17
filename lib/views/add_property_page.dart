@@ -195,9 +195,13 @@ class AddPropertyPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                MyButton(
-                  title: "Add",
-                  onPressed: handleAddProperty,
+                GetBuilder<AddPropertyController>(
+                  init: addProController,
+                  id: "addButton",
+                  builder: (controller) => MyButton(
+                    title: addProController.isAddLoading ? null : "Add",
+                    onPressed: handleAddProperty,
+                  ),
                 ),
               ],
             ),
@@ -205,7 +209,6 @@ class AddPropertyPage extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: MyBottomNavigationBar(
-        
         bottomController: bottomController,
       ),
     );
@@ -213,6 +216,7 @@ class AddPropertyPage extends StatelessWidget {
 
   void handleAddProperty() async {
     if (formKey.currentState!.validate()) {
+      addProController.changeIsAddLoading(true);
       final Property? propertyResult = await PropertiesApis.addProperty(
         property: Property(
           propertyType: addProController.selectedType.toLowerCase(),
@@ -223,7 +227,7 @@ class AddPropertyPage extends StatelessWidget {
           isForRent: addProController.isForRent,
         ),
       );
-
+      addProController.changeIsAddLoading(false);
       bool flag = propertyResult != null;
 
       Get.showSnackbar(

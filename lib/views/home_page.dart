@@ -145,9 +145,6 @@ class _HomePageState extends State<HomePage>
             searchBarWidget(),
             TabBar(
               controller: _tabController,
-              // labelColor: Colors.black,
-              // unselectedLabelColor: Colors.grey,
-              // indicatorColor: Colors.blue,
               isScrollable: true,
               tabs: tabs.map((tab) => Tab(text: tab)).toList(),
             ),
@@ -234,8 +231,18 @@ class _HomePageState extends State<HomePage>
                     child: ScaleAnimation(
                       scale: 0.8,
                       child: FadeInAnimation(
-                        child: PropertyCard(
-                          property: wantedList[index],
+                        child: GetBuilder<PropertyController>(
+                          init : propertyController,
+                          id : "propertyCard$index",
+                          builder: (controller) => AnimatedScale(
+                            scale: controller.cardAnimationScale[index],
+                            duration: const Duration(milliseconds: 150),
+                            child: PropertyCard(
+                              property: wantedList[index],
+                              scaleController: propertyController, 
+                              index: index,
+                            ),
+                          ),
                         ),
                       ),
                     ),

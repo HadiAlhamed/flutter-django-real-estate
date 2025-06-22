@@ -8,6 +8,14 @@ class PropertyDetailsController extends GetxController {
   PropertyDetails? propertyDetails;
   List<bool> isFavorite = List.generate(100005, (index) => false);
   Set<Property> isFavoriteSet = {};
+  List<double> cardAnimationScale = List.generate(100005, (index) => 1.0);
+  void changeCardScale(int index , int builderId, double newScale) {
+    cardAnimationScale[index] = newScale;
+    update([
+      "isFavorite$builderId"
+    ]);
+  }
+
   void changeIsLoading(bool value) {
     isLoading = value;
     update(['main']);

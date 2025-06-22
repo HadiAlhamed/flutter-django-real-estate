@@ -42,13 +42,19 @@ class _MyPropertiesPageState extends State<MyPropertiesPage> {
                     init: propertyController,
                     id: "property${propertyController.myProperties[index].id!}",
                     builder: (controller) {
-                      return PropertyCard(
-                        property: propertyController.myProperties[index],
-                        onTap: () {
-                          Get.toNamed("/addPropertyPage", arguments: {
-                            'isAdd' : false,
-                          });
-                        },
+                      return AnimatedScale(
+                        scale: propertyController.cardAnimationScale[index],
+                        duration: const Duration(milliseconds: 150),
+                        child: PropertyCard(
+                          index: index,
+                          scaleController: propertyController,
+                          property: propertyController.myProperties[index],
+                          onTap: () {
+                            Get.toNamed("/addPropertyPage", arguments: {
+                              'isAdd' : false,
+                            });
+                          },
+                        ),
                       );
                     },
                   );

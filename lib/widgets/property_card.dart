@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:real_estate/controllers/property_controller.dart';
 import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/models/property.dart';
 import 'package:real_estate/services/properties_apis/properties_apis.dart';
@@ -11,25 +12,39 @@ class PropertyCard extends StatelessWidget {
   final bool? favorite;
   final Property property;
   final PropertyDetailsController? pdController;
+  final dynamic scaleController;
   final void Function()? onTap;
+  final int index;
   const PropertyCard({
     super.key,
     this.favorite,
     this.pdController,
-    required this.property, 
+    required this.property,
     this.onTap,
+    required this.scaleController,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap ?? () {
-        Get.toNamed('/propertyDetails',
-            arguments: {
-              'propertyId': property.id!
-              
-            });
+      onTap: onTap ??
+          () {
+            Get.toNamed('/propertyDetails',
+                arguments: {'propertyId': property.id!});
+          },
+      onTapDown: (_) {
+        print("on tap down...");
+        scaleController.changeCardScale(index, property.id!, 0.95);
+        print("current scale : ${scaleController.cardAnimationScale[index]}");
       },
+      onTapUp: (_) {
+                print("on tap up...");
+
+        scaleController.changeCardScale(index , property.id! , 1.0);
+        onTap?.call();
+      },
+      onTapCancel: () => scaleController.changeCardScale(index , property.id!, 1.0 ),
       child: Card(
         // color: Colors.white,
         shape: RoundedRectangleBorder(

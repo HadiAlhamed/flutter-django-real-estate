@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
@@ -18,17 +19,33 @@ class ChatsPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Chats"),
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return ChatTile(
-            name: 'Joe Biden',
-            lastMessage: 'please call me as fast as possible',
-            lastMessageTime: "12:25 AM",
-            newMessages: 4,
-            screenWidth: screenWidth,
-          );
-        },
+      body: AnimationLimiter(
+        child: ListView.builder(
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return AnimationConfiguration.staggeredList(
+              position: index,
+                            duration: const Duration(milliseconds: 375),
+
+              child: SlideAnimation(
+                verticalOffset: 50.0,
+                child: ScaleAnimation(
+                  scale: 0.8,
+                  child: FadeInAnimation(
+                    curve: Easing.legacyAccelerate,
+                    child: ChatTile(
+                      name: 'Joe Biden',
+                      lastMessage: 'please call me as fast as possible',
+                      lastMessageTime: "12:25 AM",
+                      newMessages: 4,
+                      screenWidth: screenWidth,
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ),
       bottomNavigationBar:
           MyBottomNavigationBar(bottomController: bottomController),

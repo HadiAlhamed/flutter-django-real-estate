@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/widgets/chat_bubble.dart';
 import 'package:real_estate/widgets/message_input_bar.dart';
@@ -89,14 +90,29 @@ class ChatPage extends StatelessWidget {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return ChatBubble(
-                    screenWidth: screenWidth,
-                    isMe: index % 2 == 0,
-                    message: messages[index]);
-              },
+            child: AnimationLimiter(
+              child: ListView.builder(
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  return AnimationConfiguration.staggeredList(
+                    position: index,
+                    duration: const Duration(milliseconds: 375),
+                    child: SlideAnimation(
+                      verticalOffset: 50.0,
+                      child: ScaleAnimation(
+                        scale: 0.9,
+                        child: FadeInAnimation(
+                          
+                          child: ChatBubble(
+                              screenWidth: screenWidth,
+                              isMe: index % 2 == 0,
+                              message: messages[index]),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
           MessageInputBar(

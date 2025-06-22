@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/property_details_controller.dart';
@@ -41,30 +42,46 @@ class _FavoritesPageState extends State<FavoritesPage> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-        child:favoritesProperties.isEmpty ? const Center(child: Text("You have no favorites yet",),) : GridView.builder(
-          padding: const EdgeInsets.only(top: 20),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // Two items per row
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-            childAspectRatio: 0.8, // Height to width ratio
+        child:favoritesProperties.isEmpty ? const Center(child: Text("You have no favorites yet",),) : AnimationLimiter(
+          child: GridView.builder(
+            padding: const EdgeInsets.only(top: 20),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Two items per row
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.8, // Height to width ratio
+            ),
+            itemCount:
+                favoritesProperties.length, // For example, 10 items for each tab
+            itemBuilder: (context, index) {
+              return AnimationConfiguration.staggeredGrid(
+                position: index,
+                duration: const Duration(milliseconds: 375),
+                columnCount: 2,
+                child: SlideAnimation(
+                  verticalOffset: 50.0,
+                  child: ScaleAnimation(
+                    scale: 0.6,
+                    child: FadeInAnimation(
+                      curve: Curves.bounceOut,
+                      child: GetBuilder(
+                        init: pdController,
+                        id: "isFavorite${favoritesProperties[index].id}",
+                        builder: (controller) {
+                          return PropertyCard(
+                            favorite:
+                                pdController.isFavorite[favoritesProperties[index].id!],
+                            property: favoritesProperties[index],
+                            pdController: pdController,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
-          itemCount:
-              favoritesProperties.length, // For example, 10 items for each tab
-          itemBuilder: (context, index) {
-            return GetBuilder(
-              init: pdController,
-              id: "isFavorite${favoritesProperties[index].id}",
-              builder: (controller) {
-                return PropertyCard(
-                  favorite:
-                      pdController.isFavorite[favoritesProperties[index].id!],
-                  property: favoritesProperties[index],
-                  pdController: pdController,
-                );
-              },
-            );
-          },
         ),
       ),
       bottomNavigationBar: GetBuilder<BottomNavigationBarController>(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
@@ -210,20 +211,35 @@ class _HomePageState extends State<HomePage>
               _fetchUserInfo(),
             ]);
           },
-          child: GridView.builder(
-            padding: const EdgeInsets.only(top: 20),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // Two items per row
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              childAspectRatio: 0.8, // Height to width ratio
+          child: AnimationLimiter(
+            child: GridView.builder(
+              padding: const EdgeInsets.only(top: 20),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Two items per row
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 0.8, // Height to width ratio
+              ),
+              itemCount: wantedList.length, // For example, 10 items for each tab
+              itemBuilder: (context, index) {
+                return AnimationConfiguration.staggeredGrid(
+                  position: index,
+                  duration: const Duration(milliseconds: 375),
+                  columnCount: 2,
+                  child: SlideAnimation(
+                    verticalOffset: 50.0,
+                    child: ScaleAnimation(
+                      scale: 0.8,
+                      child: FadeInAnimation(
+                        child: PropertyCard(
+                          property: wantedList[index],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-            itemCount: wantedList.length, // For example, 10 items for each tab
-            itemBuilder: (context, index) {
-              return PropertyCard(
-                property: wantedList[index],
-              );
-            },
           ),
         );
       },

@@ -15,6 +15,7 @@ import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
 import 'package:real_estate/widgets/my_button.dart';
+import 'package:real_estate/widgets/my_floating_action_button.dart';
 import 'package:real_estate/widgets/my_input_field.dart';
 import 'package:real_estate/widgets/my_snackbar.dart';
 
@@ -245,6 +246,8 @@ class _AddPropertyPageState extends State<AddPropertyPage> {
           ),
         ),
       ),
+      floatingActionButton: const MyFloatingActionButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: MyBottomNavigationBar(
         bottomController: bottomController,
       ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/widgets/chat_tile.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
+import 'package:real_estate/widgets/my_floating_action_button.dart';
 
 class ChatsPage extends StatelessWidget {
   ChatsPage({super.key});
@@ -28,6 +30,8 @@ class ChatsPage extends StatelessWidget {
                             duration: const Duration(milliseconds: 375),
 
               child: SlideAnimation(
+                                  horizontalOffset: 50.0,
+  
                 verticalOffset: 50.0,
                 child: ScaleAnimation(
                   scale: 0.8,
@@ -47,6 +51,9 @@ class ChatsPage extends StatelessWidget {
           },
         ),
       ),
+       floatingActionButton: const MyFloatingActionButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      
       bottomNavigationBar:
           MyBottomNavigationBar(bottomController: bottomController),
     );

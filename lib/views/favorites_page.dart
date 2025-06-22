@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/property_details_controller.dart';
 import 'package:real_estate/models/property.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
+import 'package:real_estate/widgets/my_floating_action_button.dart';
 import 'package:real_estate/widgets/property_card.dart';
 
 class FavoritesPage extends StatefulWidget {
@@ -60,6 +62,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 columnCount: 2,
                 child: SlideAnimation(
                   verticalOffset: 50.0,
+                  horizontalOffset: 50.0,
                   child: ScaleAnimation(
                     scale: 0.6,
                     child: FadeInAnimation(
@@ -84,6 +87,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
           ),
         ),
       ),
+       floatingActionButton: const MyFloatingActionButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      
       bottomNavigationBar: GetBuilder<BottomNavigationBarController>(
         init: bottomController,
         builder: (controller) {

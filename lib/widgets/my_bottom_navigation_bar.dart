@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
-import 'package:real_estate/textstyles/text_styles.dart';
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
 class MyBottomNavigationBar extends StatelessWidget {
   final BottomNavigationBarController bottomController;
@@ -15,99 +14,48 @@ class MyBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final iconList = [
+      Icons.home,
+      Icons.message_outlined,
+      Icons.favorite,
+      Icons.person,
+    ];
+
     return GetBuilder<BottomNavigationBarController>(
       init: bottomController,
-      builder: (controller) => BottomNavigationBar(
-        currentIndex: bottomController.selectedIndex,
-        selectedItemColor: primaryColor,
-        selectedLabelStyle: h4TitleStylePrimary,
-        unselectedItemColor: greyText,
-        unselectedLabelStyle: h4TitleStyleGrey,
-        showUnselectedLabels: true,
-        iconSize: 28,
-        type: BottomNavigationBarType.fixed,
-        onTap: handleBottomNavigation,
-        items: [
-          getBottomItem(
-            icon: const Icon(Icons.home),
-            label: "Home",
+      builder: (controller) =>
+          AnimatedBottomNavigationBar(
+            icons: iconList,
+            activeIndex: controller.selectedIndex,
+            gapLocation: GapLocation.center ,
+            notchSmoothness: NotchSmoothness.verySmoothEdge,
+            backgroundColor:Theme.of(context).brightness == Brightness.light ?  Colors.white : Colors.black,
+            activeColor: primaryColor,
+            inactiveColor: greyText,
+            iconSize: 28,
+            leftCornerRadius: 24,
+            rightCornerRadius: 24,
+            onTap: (index) => handleBottomNavigation(index),
           ),
-          getBottomItem(
-            icon: const Icon(
-              Icons.message_outlined,
-            ),
-            label: "Messages",
-          ),
-          if (bottomController.isSeller)
-            const BottomNavigationBarItem(
-              icon: CircleAvatar(
-                backgroundColor: primaryColor,
-                child: Icon(
-                  Icons.add,
-                  size: 30,
-                  color: Colors.white,
-                ),
-              ),
-              label: "",
-            ),
-          getBottomItem(
-            icon: const Icon(Icons.favorite),
-            label: "Favorites",
-          ),
-          getBottomItem(
-            icon: const Icon(Icons.person),
-            label: "Account",
-          ),
-        ],
-      ),
+        
     );
   }
 
-  BottomNavigationBarItem getBottomItem({
-    required String label,
-    required Icon icon,
-  }) {
-    return BottomNavigationBarItem(
-      icon: Padding(
-        padding: EdgeInsets.only(
-          top: bottomController.isSeller ? 0 : 8.0,
-        ),
-        child: icon,
-      ),
-      label: label,
-    );
-  }
-
-  void handleBottomNavigation(index) {
+  void handleBottomNavigation(int index) {
     print("index : $index");
     bottomController.changeSelectedIndex(index: index);
+
     if (index == 0) {
-      //go home
       Get.offNamed('/home');
-    }
-    if (index == 1) {
-      //go to messages
+    } else if (index == 1) {
       Get.offNamed("/chatsPage");
-    }
-    if (index == 2) {
-      if (bottomController.isSeller) {
-        Get.offNamed('/addPropertyPage', arguments: {
-          "isAdd": true,
-        });
-      } else {
+    } else if (index == 2) {
+      
         Get.offNamed('/favoritesPage');
-      }
-    }
-    if (index == 3) {
-      //go accountpage
-      if (bottomController.isSeller) {
-        Get.offNamed('/favoritesPage');
-      } else {
-        Get.offNamed('/accountPage');
-      }
-    }
-    if (index == 4) {
+      
+    } else if (index == 3) {
       Get.offNamed('/accountPage');
-    }
+      
+    } 
   }
 }

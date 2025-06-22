@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
+import 'package:real_estate/controllers/account_page_controller.dart';
 import 'package:real_estate/controllers/bottom_navigation_bar_controller.dart';
 import 'package:real_estate/controllers/profile_controller.dart';
 import 'package:real_estate/controllers/property_controller.dart';
@@ -14,6 +15,7 @@ import 'package:real_estate/services/properties_apis/properties_apis.dart';
 import 'package:real_estate/textstyles/text_colors.dart';
 import 'package:real_estate/textstyles/text_styles.dart';
 import 'package:real_estate/widgets/my_bottom_navigation_bar.dart';
+import 'package:real_estate/widgets/my_floating_action_button.dart';
 import 'package:real_estate/widgets/property_card.dart';
 
 class HomePage extends StatefulWidget {
@@ -42,7 +44,7 @@ class _HomePageState extends State<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.wait([
         _fetchProperties(),
-        if(profileController.isInitialLoading)_fetchUserInfo(),
+        if (profileController.isInitialLoading) _fetchUserInfo(),
         if (pdController.isFavoriteSet.isEmpty) _fetchFavorites(),
       ]);
     });
@@ -70,11 +72,9 @@ class _HomePageState extends State<HomePage>
     do {
       pProperty =
           await PropertiesApis.getProperties(url: pProperty.nextPageUrl);
-              
+
       for (var property in pProperty.properties) {
         propertyController.addProperty(property);
-
-        
       }
     } while (pProperty.nextPageUrl != null);
     propertyController.changeIsLoading(false);
@@ -160,6 +160,8 @@ class _HomePageState extends State<HomePage>
           ],
         ),
       ),
+      floatingActionButton: const MyFloatingActionButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: GetBuilder<BottomNavigationBarController>(
         init: bottomController,
         builder: (controller) {
@@ -220,7 +222,8 @@ class _HomePageState extends State<HomePage>
                 mainAxisSpacing: 10,
                 childAspectRatio: 0.8, // Height to width ratio
               ),
-              itemCount: wantedList.length, // For example, 10 items for each tab
+              itemCount:
+                  wantedList.length, // For example, 10 items for each tab
               itemBuilder: (context, index) {
                 return AnimationConfiguration.staggeredGrid(
                   position: index,

@@ -25,7 +25,10 @@ class PropertyCard extends StatelessWidget {
     return InkWell(
       onTap: onTap ?? () {
         Get.toNamed('/propertyDetails',
-            arguments: {'propertyId': property.id!});
+            arguments: {
+              'propertyId': property.id!
+              
+            });
       },
       child: Card(
         // color: Colors.white,

@@ -97,6 +97,7 @@ class _PropertyDetailsPageState extends State<PropertyDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.sizeOf(context).height;
+    
     return Scaffold(
       body: GetBuilder<PropertyDetailsController>(
         init: pdController,
